@@ -1,28 +1,48 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div class="container">
+      <h1>Terminal Hacking Game</h1>
+      <div class="terminal-outer-1">
+        <GameBoard />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import GameBoard from './components/GameBoard.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    GameBoard
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'VT323', monospace;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-size: 16px;
+  letter-spacing: 2px;
 }
+
+h1 {
+  font-size: 3em;
+}
+
+body {
+  background-color: rgba(0,0,0,.1);
+}
+
+.terminal-outer-1 {
+
+}
+
+
 </style>
