@@ -13,44 +13,14 @@
           </div>
           <div class="row">
             <div class="col left">
-              <div>
-                <div
-                  v-for="row in leftColData.hexList"
-                  :key="row.key"
-                  class="hex"
-                >
-                  {{ row.val }}
-                </div>
-              </div>
-              <div>
-                <div
-                  v-for="row in leftColData.textList"
-                  :key="row.key"
-                  class="text"
-                >
-                  {{ row.val }}
-                </div>
-              </div>
+              <PuzzleColumn 
+                :colData="leftColData"
+              />
             </div>
-            <div class="col middle">
-              <div>
-                <div
-                  v-for="row in rightColData.hexList"
-                  :key="row.key"
-                  class="hex"
-                >
-                  {{ row.val }}
-                </div>
-              </div>
-              <div>
-                <div
-                  v-for="row in rightColData.textList"
-                  :key="row.key"
-                  class="text"
-                >
-                  {{ row.val }}
-                </div>
-              </div>
+            <div class="col middle">              
+              <PuzzleColumn 
+                :colData="rightColData"
+              />
             </div>
             <div class="col right">
               <div>
@@ -87,18 +57,30 @@ import {
   WORD_LEVELS,
   LEVEL_COLUMN_WORD_COUNT,
   LEVEL_WORD_LENGTH,
+  BRACKET_PAIRS,
+  LEVEL_COLUMN_HELP_COUNT
 } from "../util/word.js";
-import { getRandomNumber, getRandomWordList } from "../util/game.js";
+import { 
+  getRandomNumber,
+  getRandomWordList,
+  getRandomHelperList 
+} from "../util/game.js";
+
+import PuzzleColumn from './PuzzleColumn';
 
 export default {
   name: "GameBoard",
+  components: {
+    PuzzleColumn
+  },
   data() {
     return {
       currentLevel: LEVEL_TYPE.LEVEL_1,
       attemptsRemaining: 4,
       rowCount: 17,
-      colCount: 19,
+      colCount: 12,
       hexValue: 63300,
+      tabIndex: 1,
       leftColData: {
         hexList: [],
         textList: [],
@@ -110,16 +92,13 @@ export default {
       wordList: [],
       passWord: "",
       fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
-      bracketChars: "(){}[]<>",
+
     };
   },
   methods: {
     getHexString() {
       const hexPrefix = "0x";
       return `${hexPrefix}${Number(this.hexValue++ >>> 0).toString(16)}`;
-    },
-    getColFiller() {
-      return `@)SNOW@#_[](SDF')BF`;
     },
     getRandomFillerChar() {
       const min = 0;
@@ -139,47 +118,46 @@ export default {
     loadColmnRows(colData, colWordList) {
       const rowTextList = this.getColumnCharsRowList(colWordList);
 
+      colData.textList = [...rowTextList];
+
+
       for (let i = 0; i < this.rowCount; i++) {
         colData.hexList.push({
           key: i,
           val: this.getHexString(),
         });
-
-        colData.textList.push({
-          key: i,
-          val: rowTextList[i],
-        });
       }
     },
     getColumnCharsRowList(colWordList) {
-      const wordList = [...colWordList];
+      let wordList = colWordList.map(word => ({ type: 'word', val: word}));
+
+      const colhelperList = getRandomHelperList(LEVEL_COLUMN_HELP_COUNT[this.currentLevel], BRACKET_PAIRS, this.fillerChars)
+
+
+      const helperCharCount = colhelperList.join('').length;
+
+      const helperList = colhelperList.map(word => ({ type: 'helper', val: word}));
+
+
+
       const totalColStringLength = this.colCount * this.rowCount;
-      const wordCharsLength =
-        LEVEL_WORD_LENGTH[this.currentLevel] * wordList.length;
-      const charsToFillLength = totalColStringLength - wordCharsLength;
+      const wordCharsLength = LEVEL_WORD_LENGTH[this.currentLevel] * wordList.length;
+      const charsToFillLength = totalColStringLength - wordCharsLength - helperCharCount;
+
+      wordList = wordList.concat(helperList);
+      console.log(totalColStringLength, wordCharsLength, helperCharCount, charsToFillLength)
 
       for (let i = 0; i < charsToFillLength; i++) {
-        wordList.push(this.getRandomFillerChar());
+        wordList.push({ type: 'filler', val: this.getRandomFillerChar()});
       }
 
       const shuffledWordsAndCharacters = wordList
-        .map((a) => ({ sort: Math.random(), value: a }))
-        .sort((a, b) => a.sort - b.sort)
-        .map((a) => a.value);
+        .map((a) => ({ __sort: Math.random(), __val: a }))
+        .sort((a, b) => a.__sort - b.__sort)
+        .map((a) => a.__val);
 
-      const colAsString = shuffledWordsAndCharacters.join("");
-
-      var rowsStringList = [];
-
-      for (
-        var i = 0, charsLength = colAsString.length;
-        i < charsLength;
-        i += this.colCount
-      ) {
-        rowsStringList.push(colAsString.substring(i, i + this.colCount));
-      }
-
-      return rowsStringList;
+      console.log(shuffledWordsAndCharacters)
+      return shuffledWordsAndCharacters.map(w => ({ ...w, key: this.tabIndex++,}))
     },
   },
   created() {
@@ -203,6 +181,7 @@ export default {
   font-size: 1.5em;
   text-align: left;
   border-radius: 2em;
+  letter-spacing: 3px;
 }
 
 .outer {
@@ -216,7 +195,7 @@ export default {
 .inner {
   overflow: hidden;
   position: relative;
-  /* background-color: #000000; */
+  pointer-events: auto;
   background: repeating-linear-gradient(
     0deg,
     #111,
@@ -233,6 +212,7 @@ export default {
 .inner::after {
   content: " ";
   position: absolute;
+  pointer-events: none;
   top: 0%; right: 0%; bottom: 10%; left: 10%;
   background-image: radial-gradient(
     circle,
@@ -254,8 +234,11 @@ export default {
 .top {
   padding: 0.35em;
 }
-.hex {
-  margin-right: 0.35em;
+
+
+.text-btn:focus {
+  color: #000;
+  background-color: #00ff33;
 }
 
 .left,

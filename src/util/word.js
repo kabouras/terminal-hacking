@@ -10,10 +10,10 @@ export const LEVEL_COLUMN_WORD_COUNT = {
   [LEVEL_TYPE.LEVEL_3]: 5,
 };
 
-export const LEVEL_COLLUMN_HELP_COUNT = {
-  [LEVEL_TYPE.LEVEL_1]: 3,
-  [LEVEL_TYPE.LEVEL_2]: 3,
-  [LEVEL_TYPE.LEVEL_3]: 2,
+export const LEVEL_COLUMN_HELP_COUNT = {
+  [LEVEL_TYPE.LEVEL_1]: 4,
+  [LEVEL_TYPE.LEVEL_2]: 2,
+  [LEVEL_TYPE.LEVEL_3]: 1,
 };
 
 export const LEVEL_WORD_LENGTH = {
@@ -21,6 +21,25 @@ export const LEVEL_WORD_LENGTH = {
   [LEVEL_TYPE.LEVEL_2]: 7,
   [LEVEL_TYPE.LEVEL_3]: 8,
 };
+
+export const BRACKET_PAIRS = [
+	{
+		left: '(',
+		right: ')'
+	},
+	{
+		left: '{',
+		right: '}'
+	},
+	{
+		left: '[',
+		right: ']'
+	},
+	{
+		left: '<',
+		right: '>'
+	},
+];
 
 export const WORD_LEVELS = {
 	"LEVEL_1": [
