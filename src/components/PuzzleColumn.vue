@@ -13,6 +13,8 @@
         class="text-btn"
         :tabindex="row.key"
         :autofocus="(row.key === 1) ? 'autofocus' : false"
+        :id="`tab_${row.key}`"
+        @focus="() => onElementFocus({...row})"
       />
     </div>
   </div>
@@ -27,6 +29,10 @@ export default {
         return { hexList: [], textList: [] };
       },
     },
+    onElementFocus: {
+      type: Function,
+      default: undefined
+    }
   },
 };
 </script>

@@ -40,9 +40,4 @@ body {
   background-color: rgba(0,0,0,.1);
 }
 
-.terminal-outer-1 {
-
-}
-
-
 </style>
