@@ -5,8 +5,9 @@
         <div class="top">
           <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
           <div>
-            ENTER PASSWORD NOW {{ focusedElementIdx }} - {{ lastElementIdx }} -
-            {{ focusedElementType }} -- {{ focusedElementVal }}
+            ENTER PASSWORD NOW 
+            <!-- {{ focusedElementIdx }} - {{ lastElementIdx }} -
+            {{ focusedElementType }} -- {{ focusedElementVal }} -->
           </div>
           <br />
           <div>
@@ -19,12 +20,14 @@
             <PuzzleColumn
               :colData="leftColData"
               :onElementFocus="onElementFocus"
+              :onSelect="onSelect"
             />
           </div>
           <div class="col middle">
             <PuzzleColumn
               :colData="rightColData"
               :onElementFocus="onElementFocus"
+              :onSelect="onSelect"
             />
           </div>
           <div class="col right">
@@ -286,8 +289,9 @@ export default {
       } else {
         this.attemptsRemaining--;
         if (this.attemptsRemaining === 0) {
+          this.clearfeedbackRows();
           this.appendfeedbackRows("Locked Out");
-          this.appendfeedbackRows("NO ATTEMPTS REMAIN!");
+          this.appendfeedbackRows("NO ATTEMPTS LEFT");
         } else {
           this.appendfeedbackRows("Entry Denied");
           this.appendfeedbackRows(`${matchCount}/${pw.length} correct`);

@@ -14,6 +14,10 @@
         :tabindex="row.key"
         :autofocus="(row.key === 1) ? 'autofocus' : false"
         :id="`tab_${row.key}`"
+        @click="() => {
+          onElementFocus({...row});
+          onSelect();
+        }"
         @focus="() => onElementFocus({...row})"
       />
     </div>
@@ -32,6 +36,16 @@ export default {
     onElementFocus: {
       type: Function,
       default: undefined
+    },
+    onSelect: {
+      type: Function,
+      default: undefined
+    },
+    methods: {
+      onElementSelect(row) {
+        this.onElementFocus({...row});
+        this.onSelect();
+      }
     }
   },
 };
@@ -69,7 +83,7 @@ export default {
 }
 
 .text-btn:focus {
-  animation: text-btn 1s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+  animation: text-btn .8s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
 }
 /* @keyframes text-btn { to { opacity: 0; } } */
 @keyframes text-btn {
