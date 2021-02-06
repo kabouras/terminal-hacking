@@ -10,6 +10,7 @@
       class="char-span text-btn"
       :class="{active: isActive}"
       :data-pkey="node.key"
+      @click="() => log(node)"
       @focus.stop="($evt) => handleSelect($evt, { node, nodeIdx: idx, charIndex: val.charIndex })"
     />
   </fragment>
@@ -29,7 +30,12 @@ export default {
     }
   },
   methods: {
+    log(node) {
+      console.log(JSON.stringify(node, null, '\t'))
+
+    },
     handleSelect($evt, data) {
+      this.log(data);
       const { nodeIdx } = data;
       const { type, valList } = data.node;
       let publishType = type;

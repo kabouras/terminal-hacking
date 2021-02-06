@@ -6,9 +6,6 @@
           <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
           <div>
             ENTER PASSWORD NOW 
-            <!-- {{ focusedElementIdx }} - {{ focusedElementKey }} - -->
-             <!--  {{ focusedElementType }} -- {{ focusedElementVal }} -->
-
           </div>
           <br />
           <div>
@@ -93,6 +90,7 @@ export default {
       hexValue: 63300,
       tabIndex: 0,
       charIndex: 0,
+      nodeList: [],
       leftColData: {
         hexList: [],
         textList: [],
@@ -107,12 +105,9 @@ export default {
       passWord: "",
       fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
       origKeyDown: null,
-      // focusedElementType: "",
-      // focusedElementVal: "",
-      // focusedElementIdx: 0,
-      // focusedElementKey: 0,
       selected: {},
-      lastElementIdx: 0,
+      lastLeftIdx: 0,
+      lastRightIdx: 0,
     };
   },
   methods: {
@@ -135,21 +130,16 @@ export default {
       const passWordIdx = getRandomNumber(0, this.wordList.length - 1);
       this.passWord = this.wordList[passWordIdx];
     },
-    loadColmnRows(colData, colWordList) {
-      const rowTextList = this.getColumnCharsRowList(colWordList);
-
-      this.lastElementIdx = rowTextList[rowTextList.length - 1].key;
-
-      colData.textList = [...rowTextList];
-
-      // console.log(JSON.stringify(colData.textList, null, '\t'))
-
+    loadHexList() {
+      const hexList = [];
       for (let i = 0; i < this.rowCount; i++) {
-        colData.hexList.push({
+        hexList.push({
           key: i,
           val: this.getHexString(),
         });
       }
+
+      return hexList;
     },
     getColumnCharsRowList(colWordList) {
       let wordList = colWordList.map((word) => ({ 
@@ -225,10 +215,12 @@ export default {
           switch (e.keyCode) {
             case 13:
               // enter
-              self.onSelect();
+              console.log('=====ENTER KEY')
+              // self.onSelect();
               break;
             case 37:
               //left
+              console.log('=====LEFT KEY')
               currElement.parentNode.previousSibling.lastChild.focus();
               
               // self.setNextElementFocus(1, true);
@@ -236,17 +228,20 @@ export default {
               break;
             case 38:
               //up
+              console.log('=====UP KEY')
               self.setNextElementFocus(12, true);
               e.preventDefault();
               break;
             case 39:
               //right
+              console.log('=====RIGHT KEY')
               // self.setNextElementFocus(1);
-              currElement.parentNode.nextSibling.firstChild.focus();
+              // currElement.parentNode.nextSibling.firstChild.focus();
               e.preventDefault();
               break;
             case 40:
               //down
+              console.log('=====DOWN KEY')
               self.setNextElementFocus(12);
               e.preventDefault();
               break;
@@ -393,13 +388,24 @@ export default {
     const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
 
     this.loadGameWords();
-    this.loadColmnRows(this.leftColData, 
-      this.wordList.slice(0, wordCount)
-    );
-    this.loadColmnRows(
-      this.rightColData,
-      this.wordList.slice(wordCount, this.wordList.length)
-    );
+
+    let nodeList = this.getColumnCharsRowList(this.wordList.slice(0, wordCount));
+    this.lastLeftIdx = nodeList[nodeList.length - 1].key;
+
+ 
+
+    console.log('last left', nodeList.length - 1, this.lastLeftIdx)
+
+
+    nodeList = nodeList.concat(this.getColumnCharsRowList(this.wordList.slice(wordCount, this.wordList.length)));
+    this.lastRightIdx = nodeList[nodeList.length - 1].key;
+
+
+    console.log('last right', nodeList.length - 1, this.lastRightIdx)
+    console.log(nodeList)
+    
+    this.leftColData.hexList = this.loadHexList();
+    this.rightColData.hexList = this.loadHexList();
 
     this.applyDomEvents();
   },
