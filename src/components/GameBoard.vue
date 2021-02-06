@@ -20,17 +20,15 @@
           <div class="col left">
             <PuzzleColumn
               :colData="leftColData"
-              :onElementFocus="onElementFocus"
               :onSelect="onSelect"
-              :focusedElementKey="focusedElementKey"
+              :selected="selected"
             />
           </div>
           <div class="col middle">
             <PuzzleColumn
               :colData="rightColData"
-              :onElementFocus="onElementFocus"
               :onSelect="onSelect"
-              :focusedElementKey="focusedElementKey"
+              :selected="selected"
             />
           </div>
           <div class="col right">
@@ -50,6 +48,7 @@
       >{{
         JSON.stringify(
           {
+            selected,
             wordList,
             passWord,
           },
@@ -92,7 +91,7 @@ export default {
       rowCount: 17,
       colCount: 12,
       hexValue: 63300,
-      tabIndex: 1,
+      tabIndex: 0,
       charIndex: 0,
       leftColData: {
         hexList: [],
@@ -108,10 +107,11 @@ export default {
       passWord: "",
       fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
       origKeyDown: null,
-      focusedElementType: "",
-      focusedElementVal: "",
-      focusedElementIdx: 0,
-      focusedElementKey: 0,
+      // focusedElementType: "",
+      // focusedElementVal: "",
+      // focusedElementIdx: 0,
+      // focusedElementKey: 0,
+      selected: {},
       lastElementIdx: 0,
     };
   },
@@ -256,13 +256,50 @@ export default {
         }
       };
     },
+    onSelect({ node, nodeIdx, charIndex}) {
+      
+      const {
+        key,
+        type,
+        val,
+        valList
+      } = node;
+
+      console.log('onSelect',
+        key,
+        type,
+        val,
+        valList,
+        nodeIdx,
+        charIndex
+        );
+
+      this.selected = {
+        ...this.selected,
+        key,
+        type,
+        val,
+        valList,
+        nodeIdx,
+        charIndex
+      }
+
+
+
+      // const elType = this.focusedElementType;
+      // if (elType == "word") {
+      //   this.onWordSelect();
+      // } else if (elType == "helper") {
+      //   this.appendfeedbackRows("DUD REMOVED");
+      // }
+    },
     onElementFocus(data) {
       // console.log(JSON.stringify(data))
-      const { key, type, val, charIndex } = data;
-      this.focusedElementIdx = charIndex;
-      this.focusedElementKey = key;
-      this.focusedElementType = type;
-      this.focusedElementVal = val;
+      // const { key, type, val, charIndex } = data;
+      // this.focusedElementIdx = charIndex;
+      // this.focusedElementKey = key;
+      // this.focusedElementType = type;
+      // this.focusedElementVal = val;
     },
     setNextElementFocus(offset, reverse = false) {
       let currIdx = this.focusedElementIdx;
@@ -289,14 +326,6 @@ export default {
 
       this.focusedElementIdx = nextIdx;
       document.getElementById(`char_${nextIdx}`).focus();
-    },
-    onSelect() {
-      const elType = this.focusedElementType;
-      if (elType == "word") {
-        this.onWordSelect();
-      } else if (elType == "helper") {
-        this.appendfeedbackRows("DUD REMOVED");
-      }
     },
     onWordSelect() {
       let pw = this.passWord;
@@ -340,11 +369,16 @@ export default {
     const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
 
     this.loadGameWords();
-    this.loadColmnRows(this.leftColData, this.wordList.slice(0, wordCount));
+    this.loadColmnRows(this.leftColData, 
+      this.wordList.slice(0, wordCount)
+    );
     this.loadColmnRows(
       this.rightColData,
       this.wordList.slice(wordCount, this.wordList.length)
     );
+
+    console.log(JSON.stringify(this.leftColData.textList.slice(0, 5), null, '\t'))
+
     this.applyDomEvents();
   },
   destroyed() {
@@ -418,11 +452,62 @@ export default {
   padding: 0.35em;
 }
 
+.puzzle-column {
+  display: flex
+}
+.hex {
+  margin-right: 0.45em;
+}
+.text {
+  /* width: 12ch; */
+  width: 162px; 
+  box-sizing: border-box;
+}
+.text, .text-btn{ 
+   word-break: break-all;
+   white-space: break-all;
+}
+
+.text-btn {
+  display: inline;
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+  
+}
+
+.text-btn.active,
+.text-btn:focus {
+  animation: text-btn .8s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
+}
+
 .text-btn.active,
 .text-btn:focus {
   color: #000;
   background-color: #00ff33;
 }
+
+.char-span:focus {
+  outline-style: none;
+  box-shadow: none;
+  border-color: transparent;
+  border-radius: 0;
+  outline-width: 0;
+  /* background-color: black;
+  color: white; */
+}
+
+/* @keyframes text-btn { to { opacity: 0; } } */
+@keyframes text-btn {
+  0%   {opacity: 1;}
+  50%  {opacity: 1;}
+  100% {opacity: 0;}
+}
+
 
 .left,
 .middle {
