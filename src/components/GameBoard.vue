@@ -286,12 +286,12 @@ export default {
 
 
 
-      // const elType = this.focusedElementType;
-      // if (elType == "word") {
-      //   this.onWordSelect();
-      // } else if (elType == "helper") {
-      //   this.appendfeedbackRows("DUD REMOVED");
-      // }
+      const elType = type;
+      if (elType == "word") {
+        this.onWordSelect();
+      } else if (elType == "helper") {
+        this.appendfeedbackRows("DUD REMOVED");
+      }
     },
     onElementFocus(data) {
       // console.log(JSON.stringify(data))
@@ -329,7 +329,7 @@ export default {
     },
     onWordSelect() {
       let pw = this.passWord;
-      let tw = this.focusedElementVal;
+      let tw = this.selected.val;
 
       let allMatch = true;
       let matchCount = 0;
@@ -341,7 +341,7 @@ export default {
         }
       }
 
-      this.appendfeedbackRows(this.focusedElementVal);
+      this.appendfeedbackRows(this.selected.val);
 
       if (allMatch) {
         this.clearfeedbackRows();
@@ -376,8 +376,6 @@ export default {
       this.rightColData,
       this.wordList.slice(wordCount, this.wordList.length)
     );
-
-    console.log(JSON.stringify(this.leftColData.textList.slice(0, 5), null, '\t'))
 
     this.applyDomEvents();
   },
