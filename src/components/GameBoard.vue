@@ -272,7 +272,7 @@ export default {
         valList,
         nodeIdx,
         charIndex
-        );
+      );
 
       this.selected = {
         ...this.selected,
@@ -290,8 +290,32 @@ export default {
       if (elType == "word") {
         this.onWordSelect();
       } else if (elType == "helper") {
+        this.removeDud();
         this.appendfeedbackRows("DUD REMOVED");
       }
+    },
+    removeDud() {
+      let pw = this.passWord;
+      
+      const wordList = this.leftColData.textList.concat(this.rightColData.textList)
+                          .filter(w => w.type === 'word' && w.val !== pw);      
+      const dudWord = wordList[getRandomNumber(0, wordList.length - 1)];
+
+      let dudIdx;
+      if(dudWord.key <  this.rightColData.textList[0].key) {
+        dudIdx = this.leftColData.textList.findIndex(w => w.key === dudWord.key);
+        this.dashDud(this.leftColData.textList, dudIdx)
+      } else {
+        dudIdx = this.rightColData.textList.findIndex(w => w.key === dudWord.key);
+        this.dashDud(this.rightColData.textList, dudIdx)        
+      }
+    },
+    dashDud(list, dudIdx) {
+        console.log('b4', JSON.stringify(list[dudIdx]))
+        list[dudIdx].type = 'filler';        
+        list[dudIdx].valList = list[dudIdx].valList.map(v => ({...v, char: '-'}));
+        list[dudIdx].val = list[dudIdx].valList.map(v => v.char).join('');
+        console.log('af', JSON.stringify(list[dudIdx]))
     },
     onElementFocus(data) {
       // console.log(JSON.stringify(data))

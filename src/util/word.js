@@ -5,9 +5,9 @@ export const LEVEL_TYPE = {
 };
 
 export const LEVEL_COLUMN_WORD_COUNT = {
-  [LEVEL_TYPE.LEVEL_1]: 3,
-  [LEVEL_TYPE.LEVEL_2]: 4,
-  [LEVEL_TYPE.LEVEL_3]: 5,
+  [LEVEL_TYPE.LEVEL_1]: 4,
+  [LEVEL_TYPE.LEVEL_2]: 5,
+  [LEVEL_TYPE.LEVEL_3]: 6,
 };
 
 export const LEVEL_COLUMN_HELP_COUNT = {

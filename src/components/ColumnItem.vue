@@ -4,13 +4,12 @@
       :tabindex="node.key"
       v-for="(val, idx) in node.valList"
       :key="val.charIndex"
-      v-html="hasDudReported ? '-' : `${val.char}&#8203;`"
+      v-html="`${val.char}&#8203;`"
       :title="val.charIndex"
       :id="`char_${val.charIndex}`"
       class="char-span text-btn"
       :class="{active: isActive}"
       :data-pkey="node.key"
-      
       @focus.stop="($evt) => handleSelect($evt, { node, nodeIdx: idx, charIndex: val.charIndex })"
     />
   </fragment>
