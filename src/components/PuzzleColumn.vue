@@ -9,17 +9,30 @@
       <span
         v-for="row in colData.textList"
         :key="row.key"
-        v-html="`${row.val.split('').join('&#8203;')}&#8203;`"
+        
         class="text-btn"
-        :tabindex="row.key"
+        :class="{'active': row.key === focusedElementKey }"
         :autofocus="(row.key === 1) ? 'autofocus' : false"
         :id="`tab_${row.key}`"
-        @click="() => {
-          onElementFocus({...row});
-          onSelect();
-        }"
-        @focus="() => onElementFocus({...row})"
-      />
+
+      >
+        <span
+          :tabindex="row.key"
+          v-for="val in row.valList"
+          :key="val.charIndex"
+          v-html="`${val.char}&#8203;`"  
+          :title="val.charIndex"
+          :id="`char_${val.charIndex}`"
+          class="char-span"
+          :data-pkey="row.key"
+
+          @click="() => {
+            onElementFocus({...row, charIndex: val.charIndex});
+            onSelect();
+          }"
+          @focus="() => onElementFocus({...row, charIndex: val.charIndex})"
+        />
+      </span>
     </div>
   </div>
 </template>
@@ -32,6 +45,10 @@ export default {
       default: function () {
         return { hexList: [], textList: [] };
       },
+    },
+    focusedElementKey: {
+      type: Number,
+      default: undefined
     },
     onElementFocus: {
       type: Function,
@@ -82,9 +99,21 @@ export default {
   
 }
 
+.text-btn.active,
 .text-btn:focus {
   animation: text-btn .8s cubic-bezier(.5, 0, 1, 1) infinite alternate;  
 }
+
+.char-span:focus {
+  outline-style: none;
+  box-shadow: none;
+  border-color: transparent;
+  border-radius: 0;
+  outline-width: 0;
+  /* background-color: black;
+  color: white; */
+}
+
 /* @keyframes text-btn { to { opacity: 0; } } */
 @keyframes text-btn {
   0%   {opacity: 1;}

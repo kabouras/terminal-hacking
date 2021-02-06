@@ -6,8 +6,9 @@
           <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
           <div>
             ENTER PASSWORD NOW 
-            <!-- {{ focusedElementIdx }} - {{ lastElementIdx }} -
-            {{ focusedElementType }} -- {{ focusedElementVal }} -->
+            <!-- {{ focusedElementIdx }} - {{ focusedElementKey }} - -->
+             <!--  {{ focusedElementType }} -- {{ focusedElementVal }} -->
+
           </div>
           <br />
           <div>
@@ -21,6 +22,7 @@
               :colData="leftColData"
               :onElementFocus="onElementFocus"
               :onSelect="onSelect"
+              :focusedElementKey="focusedElementKey"
             />
           </div>
           <div class="col middle">
@@ -28,6 +30,7 @@
               :colData="rightColData"
               :onElementFocus="onElementFocus"
               :onSelect="onSelect"
+              :focusedElementKey="focusedElementKey"
             />
           </div>
           <div class="col right">
@@ -75,6 +78,8 @@ import {
 
 import PuzzleColumn from "./PuzzleColumn";
 
+import { nanoid } from 'nanoid';
+
 export default {
   name: "GameBoard",
   components: {
@@ -88,6 +93,7 @@ export default {
       colCount: 12,
       hexValue: 63300,
       tabIndex: 1,
+      charIndex: 0,
       leftColData: {
         hexList: [],
         textList: [],
@@ -105,6 +111,7 @@ export default {
       focusedElementType: "",
       focusedElementVal: "",
       focusedElementIdx: 0,
+      focusedElementKey: 0,
       lastElementIdx: 0,
     };
   },
@@ -135,6 +142,8 @@ export default {
 
       colData.textList = [...rowTextList];
 
+      // console.log(JSON.stringify(colData.textList, null, '\t'))
+
       for (let i = 0; i < this.rowCount; i++) {
         colData.hexList.push({
           key: i,
@@ -143,7 +152,11 @@ export default {
       }
     },
     getColumnCharsRowList(colWordList) {
-      let wordList = colWordList.map((word) => ({ type: "word", val: word }));
+      let wordList = colWordList.map((word) => ({ 
+        type: "word", 
+        val: word,  
+        valList: word.split('').map(char => ({ key: this.getRandId(), char }))
+      }));
 
       const colhelperList = getRandomHelperList(
         LEVEL_COLUMN_HELP_COUNT[this.currentLevel],
@@ -156,6 +169,7 @@ export default {
       const helperList = colhelperList.map((word) => ({
         type: "helper",
         val: word,
+        valList: word.split('').map(char => ({ key: this.getRandId(), char }))
       }));
 
       const totalColStringLength = this.colCount * this.rowCount;
@@ -167,7 +181,8 @@ export default {
       wordList = wordList.concat(helperList);
 
       for (let i = 0; i < charsToFillLength; i++) {
-        wordList.push({ type: "filler", val: this.getRandomFillerChar() });
+        const randChar = this.getRandomFillerChar();
+        wordList.push({ type: "filler", val:randChar,  valList:[{ key: this.getRandId(), char: randChar }] });
       }
 
       const shuffledWordsAndCharacters = wordList
@@ -175,10 +190,15 @@ export default {
         .sort((a, b) => a.__sort - b.__sort)
         .map((a) => a.__val);
 
-      return shuffledWordsAndCharacters.map((w) => ({
-        ...w,
-        key: this.tabIndex++,
-      }));
+      return shuffledWordsAndCharacters.map((w) => {
+        const key = this.tabIndex++;
+        return {
+          ...w,
+          key,
+          valList: w.valList
+            .map(v => ({...v, charIndex: this.charIndex++, key }))
+        }
+      });
     },
     clearfeedbackRows() {
       this.feedbackRows.splice(0, this.feedbackRows.length);
@@ -198,6 +218,9 @@ export default {
       document.onkeydown = function (e) {
         console.log(e.keyCode);
         console.log(e.key);
+        console.log('this.focusedElementIdx', self.focusedElementIdx)
+        const currElement = document.getElementById(`char_${self.focusedElementIdx}`);
+
         try {
           switch (e.keyCode) {
             case 13:
@@ -206,7 +229,9 @@ export default {
               break;
             case 37:
               //left
-              self.setNextElementFocus(1, true);
+              currElement.parentNode.previousSibling.lastChild.focus();
+              
+              // self.setNextElementFocus(1, true);
               e.preventDefault();
               break;
             case 38:
@@ -216,7 +241,8 @@ export default {
               break;
             case 39:
               //right
-              self.setNextElementFocus(1);
+              // self.setNextElementFocus(1);
+              currElement.parentNode.nextSibling.firstChild.focus();
               e.preventDefault();
               break;
             case 40:
@@ -230,23 +256,31 @@ export default {
         }
       };
     },
-    onElementFocus({ key, type, val }) {
-      this.focusedElementIdx = key;
+    onElementFocus(data) {
+      // console.log(JSON.stringify(data))
+      const { key, type, val, charIndex } = data;
+      this.focusedElementIdx = charIndex;
+      this.focusedElementKey = key;
       this.focusedElementType = type;
       this.focusedElementVal = val;
     },
     setNextElementFocus(offset, reverse = false) {
       let currIdx = this.focusedElementIdx;
       let nextIdx = 0;
+      const lastCharIdx = this.charIndex;
 
       if (reverse) {
         if (currIdx - offset >= 1) {
+          
           nextIdx = currIdx - offset;
+          console.log('curr', document.getElementById(`char_${currIdx}`).dataset.pkey );
+          console.log('next', document.getElementById(`char_${nextIdx}`).dataset.pkey );
+
         } else {
-          nextIdx = this.lastElementIdx;
+          nextIdx = lastCharIdx;
         }
       } else {
-        if (currIdx + offset <= this.lastElementIdx) {
+        if (currIdx + offset <= lastCharIdx) {
           nextIdx = currIdx + offset;
         } else {
           nextIdx = 1;
@@ -254,7 +288,7 @@ export default {
       }
 
       this.focusedElementIdx = nextIdx;
-      document.getElementById(`tab_${nextIdx}`).focus();
+      document.getElementById(`char_${nextIdx}`).focus();
     },
     onSelect() {
       const elType = this.focusedElementType;
@@ -298,6 +332,9 @@ export default {
         }
       }
     },
+    getRandId() {
+      return nanoid();
+    }
   },
   created() {
     const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
@@ -381,6 +418,7 @@ export default {
   padding: 0.35em;
 }
 
+.text-btn.active,
 .text-btn:focus {
   color: #000;
   background-color: #00ff33;
