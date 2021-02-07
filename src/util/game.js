@@ -1,3 +1,39 @@
+import {
+  LEVEL_TYPE,
+} from "./word.js";
+
+
+export const getInitialData = (currentLevel = LEVEL_TYPE.LEVEL_1) => {
+  return {
+    currentLevel,
+    attemptsRemaining: 4,
+    rowCount: 17,
+    colCount: 12,
+    hexValue: 63300,
+    tabIndex: 0,
+    charIndex: 0,
+    nodeList: [],
+    leftColData: {
+      hexList: [],
+      textList: [],
+    },
+    rightColData: {
+      hexList: [],
+      textList: [],
+    },
+    feedbackRows: [],
+    feedbackRowsKey: 1,
+    wordList: [],
+    passWord: "",
+    fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
+    origKeyDown: null,
+    selected: {},
+    lastLeftIdx: 0,
+    lastRightIdx: 0,
+  };
+}
+
+
 export const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min) + min);
 }

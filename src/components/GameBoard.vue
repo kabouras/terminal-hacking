@@ -83,6 +83,7 @@ import {
   LEVEL_COLUMN_HELP_COUNT,
 } from "../util/word.js";
 import {
+  getInitialData,
   getRandomNumber,
   getRandomWordList,
   getRandomHelperList,
@@ -100,33 +101,34 @@ export default {
     ColumnItem,
   },
   data() {
-    return {
-      currentLevel: LEVEL_TYPE.LEVEL_1,
-      attemptsRemaining: 4,
-      rowCount: 17,
-      colCount: 12,
-      hexValue: 63300,
-      tabIndex: 0,
-      charIndex: 0,
-      nodeList: [],
-      leftColData: {
-        hexList: [],
-        textList: [],
-      },
-      rightColData: {
-        hexList: [],
-        textList: [],
-      },
-      feedbackRows: [],
-      feedbackRowsKey: 1,
-      wordList: [],
-      passWord: "",
-      fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
-      origKeyDown: null,
-      selected: {},
-      lastLeftIdx: 0,
-      lastRightIdx: 0,
-    };
+    return getInitialData();
+    // return {
+    //   currentLevel: LEVEL_TYPE.LEVEL_1,
+    //   attemptsRemaining: 4,
+    //   rowCount: 17,
+    //   colCount: 12,
+    //   hexValue: 63300,
+    //   tabIndex: 0,
+    //   charIndex: 0,
+    //   nodeList: [],
+    //   leftColData: {
+    //     hexList: [],
+    //     textList: [],
+    //   },
+    //   rightColData: {
+    //     hexList: [],
+    //     textList: [],
+    //   },
+    //   feedbackRows: [],
+    //   feedbackRowsKey: 1,
+    //   wordList: [],
+    //   passWord: "",
+    //   fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
+    //   origKeyDown: null,
+    //   selected: {},
+    //   lastLeftIdx: 0,
+    //   lastRightIdx: 0,
+    // };
   },
   methods: {
     getHexString() {
@@ -398,29 +400,32 @@ export default {
     },
     getRandId() {
       return nanoid();
+    },
+    initializeGame() {
+      const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
+      this.loadGameWords();
+      let nodeList = this.getColumnCharsRowList(this.wordList.slice(0, wordCount));
+      this.lastLeftIdx = nodeList[nodeList.length - 1].key;
+      nodeList = nodeList.concat(this.getColumnCharsRowList(this.wordList.slice(wordCount, this.wordList.length)));
+      this.lastRightIdx = nodeList[nodeList.length - 1].key;    
+      this.leftColData.hexList = this.loadHexList();
+      this.rightColData.hexList = this.loadHexList();
+      this.nodeList = nodeList;
+      const [first] = this.nodeList;
+
+      this.selected = {
+        "key": first.key,
+        "type": first.type,
+        "val": first.val,
+        "valList": [...first.valList],
+        "nodeIdx": 0,
+        "charIndex": 0
+      }
+      window.addEventListener('keydown', this.handleKeyEvents)
     }
   },
   created() {
-    const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
-    this.loadGameWords();
-    let nodeList = this.getColumnCharsRowList(this.wordList.slice(0, wordCount));
-    this.lastLeftIdx = nodeList[nodeList.length - 1].key;
-    nodeList = nodeList.concat(this.getColumnCharsRowList(this.wordList.slice(wordCount, this.wordList.length)));
-    this.lastRightIdx = nodeList[nodeList.length - 1].key;    
-    this.leftColData.hexList = this.loadHexList();
-    this.rightColData.hexList = this.loadHexList();
-    this.nodeList = nodeList;
-    const [first] = this.nodeList;
-
-    this.selected = {
-      "key": first.key,
-      "type": first.type,
-      "val": first.val,
-      "valList": [...first.valList],
-      "nodeIdx": 0,
-      "charIndex": 0
-    }
-    window.addEventListener('keydown', this.handleKeyEvents)
+    this.initializeGame();
   },
   destroyed() {
     window.removeEventListener('keydown', this.handleKeyEvents);
@@ -538,8 +543,6 @@ export default {
   border-color: transparent;
   border-radius: 0;
   outline-width: 0;
-  /* background-color: black;
-  color: white; */
 }
 
 /* @keyframes text-btn { to { opacity: 0; } } */
