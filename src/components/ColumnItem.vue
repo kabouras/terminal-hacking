@@ -4,15 +4,16 @@
       v-for="(val, idx) in node.valList"
       :key="val.charIndex"
       v-html="`${val.char}&#8203;`"
-      :title="`char_${val.charIndex}`"
+      :title="`char_${val.charIndex} -- node.charIndex ${selected.charIndex} val.charIndex ${val.charIndex}`"
       :id="`char_${val.charIndex}`"
       :tabindex="node.key"      
-      :class="{active: (isActive && (node.type !== 'filler' || node.type === 'filler' && node.charIndex === val.charIndex))}"
+      :class="{active: (isActive && (node.type !== 'filler' || (node.type === 'filler' && selected.charIndex === val.charIndex)))}"
       :data-key="node.key"
-      v-on:keyup.enter="($evt) => handleSelect($evt, 'select',  { node, nodeIdx: idx, charIndex: val.charIndex })"
+      @keyup.space="($evt) => handleSelect($evt, 'select',  { node, nodeIdx: idx, charIndex: val.charIndex })"
+      @keyup.enter="($evt) => handleSelect($evt, 'select',  { node, nodeIdx: idx, charIndex: val.charIndex })"
       @dblclick.stop="($evt) => handleSelect($evt, 'select', { node, nodeIdx: idx, charIndex: val.charIndex })"
       @focus.stop="($evt) => handleSelect($evt, 'focus', { node, nodeIdx: idx, charIndex: val.charIndex })"
-      class="char-span text-btn"
+      class="char-span noSelect text-btn"
     />
   </span>
 </template>

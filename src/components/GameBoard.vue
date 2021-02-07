@@ -220,89 +220,96 @@ export default {
         val,
       });
     },
-    applyDomEvents() {
-      let self = this;
+    handleKeyEvents($evt) {
+      $evt.preventDefault();
 
-      this.origKeyDown = document.onkeydown;
-      document.onkeydown = function ($evt) {
-        $evt.preventDefault();
+      const { charIndex, key, type } = this.selected;
+      const lastKeyIdx = this.lastRightIdx;
+      const lastCharIdx = this.nodeList[this.lastRightIdx].valList[this.nodeList[this.lastRightIdx].valList.length-1].charIndex;
+      
+      let domIdSelector = null;
 
-        const { charIndex, key, type } = self.selected;
-        const lastKeyIdx = self.lastRightIdx;
-        const lastCharIdx = self.nodeList[self.lastRightIdx].valList[self.nodeList[self.lastRightIdx].valList.length-1].charIndex;
-        
-        let domIdSelector = '';
+      console.log($evt)
 
-        try {
-          switch ($evt.keyCode) {
-            case 37:
-              //left
-              console.log('=====LEFT KEY')
+      let keyType = $evt.key;
 
-              if(type === 'word') {
-                if(key === 0) {
-                  domIdSelector = lastCharIdx;
-                } else {
-                  let nexCharIndex = self.nodeList[key - 1].valList[self.nodeList[key - 1].valList.length - 1].charIndex;
-                  domIdSelector = nexCharIndex;
-                }
+      if(keyType === 'Tab') {
+        keyType = $evt.shiftKey ? 'ArrowLeft' : 'ArrowRight'
+      }
+
+
+      try {
+        switch (keyType) {
+          case 'ArrowLeft':
+            //left
+            console.log('=====LEFT KEY')
+
+            if(type === 'word') {
+              if(key === 0) {
+                domIdSelector = lastCharIdx;
               } else {
-                if(charIndex > 0) {
-                  domIdSelector = charIndex - 1;
-                } else {
-                  domIdSelector = lastCharIdx;
-                } 
-              }             
-              break;
-            case 38: {
-              //up
-              console.log('=====UP KEY')
-              let nexCharIndex = charIndex - self.colCount;
-              if(nexCharIndex < 0) {
-                nexCharIndex = lastCharIdx + 1 + nexCharIndex;
+                let nexCharIndex = this.nodeList[key - 1].valList[this.nodeList[key - 1].valList.length - 1].charIndex;
+                domIdSelector = nexCharIndex;
               }
-              domIdSelector = nexCharIndex;           
-              break;
-            }
-            case 39: {
-              //right
-              console.log('=====RIGHT KEY')
-              if(type === 'word') {
-                if(key === lastKeyIdx) {
-                  domIdSelector = 0;
-                } else {
-                  let nexCharIndex = self.nodeList[key + 1].valList[0].charIndex;
-                  domIdSelector = nexCharIndex;
-                }
+            } else {
+              if(charIndex > 0) {
+                domIdSelector = charIndex - 1;
               } else {
-                if(charIndex < lastCharIdx) {
-                  domIdSelector = charIndex + 1;
-                } else {
-                  domIdSelector = 0;
-                }
-              }             
-              break;
+                domIdSelector = lastCharIdx;
+              } 
+            }             
+            break;
+          case 'a':
+          case 'ArrowUp': {
+            //up
+            console.log('=====UP KEY')
+            let nexCharIndex = charIndex - this.colCount;
+            if(nexCharIndex < 0) {
+              nexCharIndex = lastCharIdx + 1 + nexCharIndex;
             }
-            case 40: {
-              //down
-              console.log('=====DOWN KEY')
-              let nexCharIndex = charIndex + self.colCount;
-              if(nexCharIndex > lastCharIdx) {
-                nexCharIndex = (nexCharIndex - lastCharIdx) - 1;
+            domIdSelector = nexCharIndex;           
+            break;
+          }
+          case 'ArrowRight': {
+            //right
+            console.log('=====RIGHT KEY')
+            if(type === 'word') {
+              if(key === lastKeyIdx) {
+                domIdSelector = 0;
+              } else {
+                let nexCharIndex = this.nodeList[key + 1].valList[0].charIndex;
+                domIdSelector = nexCharIndex;
               }
-              domIdSelector = nexCharIndex;
-
-              break;
+            } else {
+              if(charIndex < lastCharIdx) {
+                domIdSelector = charIndex + 1;
+              } else {
+                domIdSelector = 0;
+              }
+            }             
+            break;
+          }
+          case 'z':
+          case 'ArrowDown': {
+            //down
+            console.log('=====DOWN KEY')
+            let nexCharIndex = charIndex + this.colCount;
+            if(nexCharIndex > lastCharIdx) {
+              nexCharIndex = (nexCharIndex - lastCharIdx) - 1;
             }
+            domIdSelector = nexCharIndex;
+
+            break;
           }
-          if(domIdSelector) {
-            console.log('about to focus', domIdSelector)
-            document.getElementById(`char_${domIdSelector}`).focus();
-          }
-        } catch (e) {
-          console.log(e);
         }
-      };
+        if(domIdSelector != null) {
+          console.log('about to focus', domIdSelector)
+          document.getElementById(`char_${domIdSelector}`).focus();
+        }
+      } catch (e) {
+        console.log(e);
+      }
+      
     },
     onSelect({ command, node, nodeIdx, charIndex}) {
       try {
@@ -312,15 +319,6 @@ export default {
           val,
           valList
         } = node;
-
-        console.log('onSelect',
-          key,
-          type,
-          val,
-          valList,
-          nodeIdx,
-          charIndex
-        );
 
         this.selected = {
           ...this.selected,
@@ -415,18 +413,17 @@ export default {
     const [first] = this.nodeList;
 
     this.selected = {
-          "key": first.key,
-          "type": first.type,
-          "val": first.val,
-          "valList": [...first.valList],
-          "nodeIdx": 0,
-          "charIndex": 0
-        }
-
-    this.applyDomEvents();
+      "key": first.key,
+      "type": first.type,
+      "val": first.val,
+      "valList": [...first.valList],
+      "nodeIdx": 0,
+      "charIndex": 0
+    }
+    window.addEventListener('keydown', this.handleKeyEvents)
   },
   destroyed() {
-    // document.onkeydown = this.origKeyDown;
+    window.removeEventListener('keydown', this.handleKeyEvents);
   },
 };
 </script>
@@ -559,5 +556,15 @@ export default {
 }
 .right {
   width: 180px;
+}
+
+.noSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 </style>
