@@ -56,6 +56,63 @@
           </div>
         </div>
       </div>
+      <div class="ctrl-btn-wrap">
+        <div class="btn-panel" style="margin-right: auto">
+          <div class="screw screw-a" />
+          <div class="screw screw-b" />
+          <div class="screw screw-c" />
+          <div class="screw screw-d" />
+          <div class="logo">
+            <large>
+              CRABCO 
+            </large>
+            Terminal
+            <div style="text-align: center">
+              <img src="@/assets/crabflat-grey.svg" height="40px"/>
+            </div>
+          </div>
+        </div> 
+        <div class="btn-panel level">
+          <div class="screw screw-a" />
+          <div class="screw screw-b" />
+          <div class="screw screw-c" />
+          <div class="screw screw-d" />
+          <div style="text-align:center">
+            Level
+          </div>
+          <div class="level-wrap">
+            <div class="level-btn" :class="{active: hasStarted}">
+              <div class="level-btn-text">1</div>
+                <div class="level-btn-light"/>
+            </div>
+            <div class="level-btn middle">
+              <div class="level-btn-text">2</div>
+              <div class="level-btn-light"/>
+                
+            </div>
+            <div class="level-btn">
+              <div class="level-btn-text">3</div>
+              <div class="level-btn-light"/>
+            </div>
+          </div>
+        </div>
+        <div class="btn-panel">
+          <div class="screw screw-a" />
+          <div class="screw screw-b" />
+          <div class="screw screw-c" />
+          <div class="screw screw-d" />
+          <div style="text-align:center">
+            Start
+          </div>
+          <button 
+            class="start-btn"
+            :class="{active: hasStarted}"
+            @click.stop="() => toggleStarted()"
+          >
+            <div class="start-btn-inner"></div>
+          </button>
+        </div>
+      </div>
     </div>
     <pre style="color: black"
       >{{
@@ -101,9 +158,15 @@ export default {
     ColumnItem,
   },
   data() {
-    return getInitialData();
+    return {
+      hasStarted: false,
+      ...getInitialData()
+    }
   },
   methods: {
+    toggleStarted() {
+      this.hasStarted = !this.hasStarted
+    },
     getHexString() {
       const hexPrefix = "0x";
       return `${hexPrefix}${Number(this.hexValue++ >>> 0).toString(16)}`;
@@ -422,7 +485,7 @@ export default {
   border: solid 6px #8a7f80;
   border-radius: 2em;
   border-style: outset;
-  padding: 1em;
+  padding: 1em 1em .25em 1em;
 }
 
 .inner {
@@ -569,5 +632,134 @@ export default {
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+.ctrl-btn-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;  
+  padding:16px;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  font-size: .5em;
+  letter-spacing: 0;
+  font-weight: 900;
+  color: #323334;
+  text-shadow: none;
+
+}
+  
+  
+
+.ctrl-btn-wrap .btn-panel {
+  padding: 5px 10px;
+  min-height: 60px;
+  position: relative;
+  margin-right: 10px;
+  background: #caccce;
+  border-radius: 4px;
+  box-shadow: 1px 1px 2px #000;
+}
+
+.ctrl-btn-wrap {
+  position: relative;
+}
+
+.ctrl-btn-wrap .start-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-image: linear-gradient(#b30000 45%, #8b0000 55%);
+  background-color: #a58888;
+  box-shadow: 0px 3px 8px #aaa, inset 0px 2px 4px #f36363;
+  
+  text-align: center;
+}
+
+.ctrl-btn-wrap .start-btn .start-btn-inner {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;  
+}
+
+.ctrl-btn-wrap .start-btn.active .start-btn-inner{
+  background: radial-gradient(#ffa500 10%, #8b0000 75%);
+}
+
+.btn-panel.level {
+  height: 100%; 
+  display: flex;
+  flex-direction: column;
+} 
+
+.level-wrap {
+  height: 100%;
+  display: flex;
+  align-items: stretch;  
+  justify-content: space-between;
+  text-align: center;
+  flex-grow: 1;
+  align-self: stretch;
+}
+
+.level-btn {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-items: space-between;
+}
+
+.level-btn.middle {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.level-btn-light {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient( #ffa500 5%, rgb(100, 0, 0) 180% ); 
+  border: solid 2px #323334;
+}
+
+.level-btn.active .level-btn-light {
+  background: radial-gradient( #73ff00 10%, rgb(139, 0, 0) 140% ); 
+}
+
+
+.screw {
+  position: absolute;
+  width: 4px; 
+  height: 4px; 
+  border-radius: 50%;
+  background-color: #292929;
+}
+
+.screw-a { 
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.screw-b {
+  top: 5px;
+  right: 5px;
+}
+.screw-c {
+  bottom: 5px;
+  left: 5px;
+}
+.screw-d {
+  bottom: 5px;
+  right: 5px;
+}
+
+*{
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
+}
+button:focus {
+  outline: none;
 }
 </style>

@@ -34,6 +34,7 @@ html, body {
 
 h1 {
   font-size: 3em;
+  margin: 0;
 }
 
 body {
