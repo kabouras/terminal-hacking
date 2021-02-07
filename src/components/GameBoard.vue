@@ -481,7 +481,6 @@ export default {
       this.dashDud(dudWord.key);
     },
     dashDud(dudIdx) {
-      // this.nodeList[this.selected.key].type = 'filler';
       this.nodeList[dudIdx].type = "filler";
       this.nodeList[dudIdx].valList.forEach((v) => {
         v.char = "-";
@@ -519,7 +518,8 @@ export default {
         } else {
           this.appendfeedbackRows("Accessing");
           this.appendfeedbackRows("next level");
-          this.loadNextLevel();          
+          setTimeout(() => this.loadNextLevel(), 1600);
+                    
         }
         
       } else {
