@@ -18,8 +18,9 @@
           </div>
           <div 
             class="msg"
-            v-if="displayMode === DISPLAY_MODE.LOADING">
-            LOADING...
+            v-if="displayMode === DISPLAY_MODE.LOADING"
+          >
+            LOADING...<span class="text-btn active">.</span>
             <br /><br /><br />
             <div>
               CONTROLS
@@ -39,6 +40,46 @@
             </div>
             <div class="sub">
               
+            </div>
+          </div>
+          <div 
+            class="msg"
+            v-if="displayMode === DISPLAY_MODE.CREDITS"
+          >
+            <div>
+              <span class="lazy-spacer">.</span>
+              <span class="lazy-spacer">.</span>
+              <span class="lazy-spacer">.</span>
+              <span class="lazy-spacer">.</span>
+              | |
+            </div>
+            <div>
+              <span class="lazy-spacer">.</span>
+              
+              (\(<span class="lazy-spacer">.</span>_<span class="lazy-spacer">.</span>)/)
+            </div>
+            <div>
+
+              <span class="lazy-spacer">.</span>
+              <span class="lazy-spacer">.</span>
+              <span class="lazy-spacer">.</span>
+              <span v-html="'&#123;&#123;'" />
+              <span class="lazy-spacer">.</span>
+              <span class="lazy-spacer">.</span>
+              }}
+            </div>
+            <br /><br />
+            <div>Thank you for playing!<br /><br /><br /></div>
+            <div>
+              This project was inspired by the terminal hacking mini game in our favourte RPG series.
+              <br /><br />
+            </div>
+            <div>
+              Originally made with love that turned a grind and appreciation for the effort in the little things.
+              <br /><br />
+            </div>
+            <div>
+              Toggle the start button to play again.
             </div>
           </div>
           <div
@@ -71,8 +112,7 @@
               </PuzzleColumn>
             </div>
             <div class="col right">
-              <div>
-                <!-- <div>(\/)(' ')(\/)</div> -->
+              <div>                
                 <div v-for="row in feedbackRows" :key="row.key">
                   >{{ row.val }}
                 </div>
@@ -103,15 +143,24 @@
           <div class="screw screw-d" />
           <div style="text-align: center">Level</div>
           <div class="level-wrap">
-            <div class="level-btn" :class="{ active: hasStarted }">
+            <div class="level-btn" 
+              :class="{ active: hasStarted && currentLevel === LEVEL_TYPE.LEVEL_1 }"
+              
+            >
               <div class="level-btn-text">1</div>
               <div class="level-btn-light" />
             </div>
-            <div class="level-btn middle">
+            <div 
+              class="level-btn middle"
+              :class="{ active: hasStarted && currentLevel === LEVEL_TYPE.LEVEL_2 }"
+            >
               <div class="level-btn-text">2</div>
               <div class="level-btn-light" />
             </div>
-            <div class="level-btn">
+            <div 
+              class="level-btn"
+              :class="{ active: hasStarted && currentLevel === LEVEL_TYPE.LEVEL_3 }"
+            >
               <div class="level-btn-text">3</div>
               <div class="level-btn-light" />
             </div>
@@ -151,7 +200,7 @@
 
 <script>
 import {
-  // LEVEL_TYPE,
+  LEVEL_TYPE,
   DISPLAY_MODE,
   WORD_LEVELS,
   LEVEL_COLUMN_WORD_COUNT,
@@ -181,6 +230,7 @@ export default {
     return {
       hasStarted: false,
       DISPLAY_MODE,
+      LEVEL_TYPE,
       ...getInitialData(),
     };
   },
@@ -189,11 +239,12 @@ export default {
       this.hasStarted = !this.hasStarted;
 
       if (this.hasStarted) {
-        console.log('init metho')
-        this.reset();
-        this.initializeGame()
-        setTimeout(() => this.displayMode = DISPLAY_MODE.GAME, 3000);
-        
+        setTimeout(() => {
+          this.displayMode = DISPLAY_MODE.LOADING;
+          this.reset(); 
+        }, 1500 );        
+      } else {
+        this.displayMode = DISPLAY_MODE.LOADING;
       }
     },
     getHexString() {
@@ -458,9 +509,19 @@ export default {
       if (allMatch) {
         this.clearfeedbackRows();
         this.appendfeedbackRows("Exact Match!");
-        this.appendfeedbackRows("Please wait");
-        this.appendfeedbackRows("while System");
-        this.appendfeedbackRows("is accessed");
+
+        if(this.currentLevel === this.LEVEL_TYPE.LEVEL_3) {
+          this.appendfeedbackRows("Please wait");
+          this.appendfeedbackRows("while System");
+          this.appendfeedbackRows("is accessed");
+          setTimeout(() => this.displayMode = DISPLAY_MODE.CREDITS, 2000);
+
+        } else {
+          this.appendfeedbackRows("Accessing");
+          this.appendfeedbackRows("next level");
+          this.loadNextLevel();          
+        }
+        
       } else {
         this.attemptsRemaining--;
         if (this.attemptsRemaining === 0) {
@@ -476,8 +537,15 @@ export default {
     getRandId() {
       return nanoid();
     },
-    reset() {
-      const initialData = getInitialData();
+    loadNextLevel() {
+      // setTimeout(() => {
+        // this.displayMode = DISPLAY_MODE.LOADING;
+        const nextLevel = this.currentLevel === this.LEVEL_TYPE.LEVEL_1 ? this.LEVEL_TYPE.LEVEL_2 : this.LEVEL_TYPE.LEVEL_3;
+        this.reset(nextLevel);
+      // }, 2000);
+    },    
+    reset(level = this.LEVEL_TYPE.LEVEL_1) {
+      const initialData = getInitialData(level);
       Object.keys(initialData).forEach(k => {
         const item = initialData[k];
         if(Array.isArray(item)) {
@@ -488,6 +556,9 @@ export default {
           this[k] = item;
         }
       });
+      this.initializeGame();
+      this.displayMode = DISPLAY_MODE.GAME;
+      // setTimeout(() => this.displayMode = DISPLAY_MODE.GAME, 1700);
     },
     initializeGame() {
       const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];

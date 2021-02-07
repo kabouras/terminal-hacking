@@ -304,3 +304,8 @@
 button:focus {
   outline: none;
 }
+
+.lazy-spacer {
+  color: transparent !important;
+  text-shadow: none !important;
+}
