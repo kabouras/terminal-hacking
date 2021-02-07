@@ -10,10 +10,16 @@ export const LEVEL_TYPE = {
   LEVEL_3: 'LEVEL_3',
 };
 
+export const LEVEL_STEPS = {
+  [LEVEL_TYPE.LEVEL_1]: 10,
+  [LEVEL_TYPE.LEVEL_2]: 20,
+  [LEVEL_TYPE.LEVEL_3]: 30,
+};
+
 export const LEVEL_COLUMN_WORD_COUNT = {
   [LEVEL_TYPE.LEVEL_1]: 4,
   [LEVEL_TYPE.LEVEL_2]: 5,
-  [LEVEL_TYPE.LEVEL_3]: 6,
+  [LEVEL_TYPE.LEVEL_3]: 7,
 };
 
 export const LEVEL_COLUMN_HELP_COUNT = {

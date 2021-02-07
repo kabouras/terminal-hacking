@@ -102,6 +102,10 @@
   padding-top: 36px;
 }
 
+.game-progress {
+  display: flex;
+  justify-content: space-between;
+}
 
 .puzzle-column {
   display: flex

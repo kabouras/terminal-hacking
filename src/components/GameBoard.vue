@@ -10,10 +10,16 @@
             <div v-if="displayMode === DISPLAY_MODE.GAME">
               <div>ENTER PASSWORD NOW</div>
               <br />
-              <div>
-                {{ attemptsRemaining }} ATTEMPTS(S) LEFT
-                <span v-for="idx in attemptsRemaining" :key="idx"> &#9632; </span>
+              <div class="game-progress">
+                <div>
+                  {{ attemptsRemaining }} ATTEMPTS(S) LEFT
+                  <span v-for="idx in attemptsRemaining" :key="idx"> &#9632; </span>
+                </div>
+                <div>
+                  {{currentStep + 1 }}/{{LEVEL_STEPS[currentLevel]}} STEP 
+                </div>
               </div>
+              
             </div>
           </div>
           <div 
@@ -201,6 +207,7 @@
 <script>
 import {
   LEVEL_TYPE,
+  LEVEL_STEPS,
   DISPLAY_MODE,
   WORD_LEVELS,
   LEVEL_COLUMN_WORD_COUNT,
@@ -231,6 +238,7 @@ export default {
       hasStarted: false,
       DISPLAY_MODE,
       LEVEL_TYPE,
+      LEVEL_STEPS,
       ...getInitialData(),
     };
   },
@@ -278,6 +286,7 @@ export default {
       return hexList;
     },
     getColumnCharsRowList(colWordList) {
+      
       let wordList = colWordList.map((word) => ({
         type: "word",
         val: word,
@@ -285,6 +294,8 @@ export default {
           .split("")
           .map((char) => ({ key: this.getRandId(), char })),
       }));
+
+      const spacersNeeded = wordList.length;
 
       const colhelperList = getRandomHelperList(
         LEVEL_COLUMN_HELP_COUNT[this.currentLevel],
@@ -310,9 +321,19 @@ export default {
 
       wordList = wordList.concat(helperList);
 
-      for (let i = 0; i < charsToFillLength; i++) {
+      for (let i = 0; i < charsToFillLength - spacersNeeded; i++) {
         const randChar = this.getRandomFillerChar();
         wordList.push({
+          type: "filler",
+          val: randChar,
+          valList: [{ key: this.getRandId(), char: randChar }],
+        });
+      }
+
+      const spacers = [];
+      for (let i = 0; i < spacersNeeded; i++) {
+        const randChar = this.getRandomFillerChar();
+        spacers.push({
           type: "filler",
           val: randChar,
           valList: [{ key: this.getRandId(), char: randChar }],
@@ -324,7 +345,16 @@ export default {
         .sort((a, b) => a.__sort - b.__sort)
         .map((a) => a.__val);
 
-      return shuffledWordsAndCharacters.map((w) => {
+      const gameWordList = [];
+
+      shuffledWordsAndCharacters.forEach((w) => {
+        if(w.type === 'word') {
+          gameWordList.push(spacers.shift());
+        }
+        gameWordList.push(w);
+      });
+
+      return gameWordList.map((w) => {
         const key = this.tabIndex++;
         return {
           ...w,
@@ -517,7 +547,7 @@ export default {
 
         } else {
           this.appendfeedbackRows("Accessing");
-          this.appendfeedbackRows("next level");
+          this.appendfeedbackRows("next step");
           setTimeout(() => this.loadNextLevel(), 1600);
                     
         }
@@ -538,14 +568,19 @@ export default {
       return nanoid();
     },
     loadNextLevel() {
-      // setTimeout(() => {
-        // this.displayMode = DISPLAY_MODE.LOADING;
+      
+      if (this.currentStep === this.LEVEL_STEPS[this.currentLevel] -1) {
         const nextLevel = this.currentLevel === this.LEVEL_TYPE.LEVEL_1 ? this.LEVEL_TYPE.LEVEL_2 : this.LEVEL_TYPE.LEVEL_3;
+        this.currentStep = 0;
         this.reset(nextLevel);
-      // }, 2000);
+      } else {
+        this.currentStep++;
+        this.reset(this.currentLevel, this.currentStep);
+      }
+
     },    
-    reset(level = this.LEVEL_TYPE.LEVEL_1) {
-      const initialData = getInitialData(level);
+    reset(level, currentStep) {
+      const initialData = getInitialData(level, currentStep);
       Object.keys(initialData).forEach(k => {
         const item = initialData[k];
         if(Array.isArray(item)) {

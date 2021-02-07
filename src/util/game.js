@@ -3,9 +3,13 @@ import {
   DISPLAY_MODE,
 } from "./word.js";
 
-export const getInitialData = (currentLevel = LEVEL_TYPE.LEVEL_1) => {
+export const getInitialData = (level, step) => {
+  console.log('getInitialData', level, step)
+  const currentLevel = level || LEVEL_TYPE.LEVEL_1;
+  const currentStep = step || 0;
   return {
     currentLevel,
+    currentStep,
     displayMode: DISPLAY_MODE.LOADING,
     attemptsRemaining: 4,
     rowCount: 17,
