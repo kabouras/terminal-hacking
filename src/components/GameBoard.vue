@@ -5,7 +5,7 @@
         <div class="top">
           <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
           <div>
-            ENTER PASSWORD NOW 
+            ENTER PASSWORD NOW  -- {{lastLeftIdx}} -- {{lastRightIdx}}
           </div>
           <br />
           <div>
@@ -17,16 +17,30 @@
           <div class="col left">
             <PuzzleColumn
               :colData="leftColData"
-              :onSelect="onSelect"
-              :selected="selected"
-            />
+              v-if="nodeList && nodeList.length === lastRightIdx+ 1"
+            >
+              <ColumnItem 
+                v-for="node in nodeList.slice(0, lastLeftIdx + 1)"                
+                :key="node.key"
+                :node="node" 
+                :onSelect="onSelect" 
+                :selected="selected"
+              />              
+            </PuzzleColumn>
           </div>
           <div class="col middle">
             <PuzzleColumn
               :colData="rightColData"
-              :onSelect="onSelect"
-              :selected="selected"
-            />
+              v-if="nodeList && nodeList.length === lastRightIdx+ 1"
+            >
+              <ColumnItem 
+                v-for="node in nodeList.slice(lastLeftIdx + 1, lastRightIdx + 1)"                
+                :key="node.key"
+                :node="node" 
+                :onSelect="onSelect" 
+                :selected="selected"
+              />
+            </PuzzleColumn>
           </div>
           <div class="col right">
             <div>
@@ -73,6 +87,7 @@ import {
 } from "../util/game.js";
 
 import PuzzleColumn from "./PuzzleColumn";
+import ColumnItem from './ColumnItem';
 
 import { nanoid } from 'nanoid';
 
@@ -80,6 +95,7 @@ export default {
   name: "GameBoard",
   components: {
     PuzzleColumn,
+    ColumnItem,
   },
   data() {
     return {
@@ -202,17 +218,61 @@ export default {
         val,
       });
     },
+    getDomData() {
+      console.log('getDomData', JSON.stringify(this.selected, null, '\t'));
+      
+
+      
+    
+      // let currIdx = this.focusedElementIdx;
+      // let nextIdx = 0;
+      // const lastCharIdx = this.charIndex;
+
+      // if (reverse) {
+      //   if (currIdx - offset >= 1) {
+          
+      //     nextIdx = currIdx - offset;
+      //     console.log('curr', document.getElementById(`char_${currIdx}`).dataset.pkey );
+      //     console.log('next', document.getElementById(`char_${nextIdx}`).dataset.pkey );
+
+      //   } else {
+      //     nextIdx = lastCharIdx;
+      //   }
+      // } else {
+      //   if (currIdx + offset <= lastCharIdx) {
+      //     nextIdx = currIdx + offset;
+      //   } else {
+      //     nextIdx = 1;
+      //   }
+      // }
+
+      // this.focusedElementIdx = nextIdx;
+      // document.getElementById(`char_${nextIdx}`).focus();
+    
+    },
     applyDomEvents() {
       let self = this;
       this.origKeyDown = document.onkeydown;
-      document.onkeydown = function (e) {
-        console.log(e.keyCode);
-        console.log(e.key);
-        console.log('this.focusedElementIdx', self.focusedElementIdx)
-        const currElement = document.getElementById(`char_${self.focusedElementIdx}`);
+      document.onkeydown = function ($evt) {
+        $evt.preventDefault();
+        
+
+        console.log('applyDomEvents', JSON.stringify(self.selected, null, '\t'));
+
+        const { charIndex, key, valList, type } = self.selected;
+        
+
+        const lastKeyIdx = self.lastRightIdx;
+        const lastCharIdx = self.nodeList[self.lastRightIdx].valList[self.nodeList[self.lastRightIdx].valList.length-1].charIndex;
+        const firstCharInCurrent = valList[0].charIndex;
+        const lastCharInCurrent = valList[valList.length -1].charIndex;
+
+        console.log(JSON.stringify({charIndex, key, lastKeyIdx, lastCharIdx}));
+
+        let domIdSelector = '';
 
         try {
-          switch (e.keyCode) {
+          switch ($evt.keyCode) {
             case 13:
               // enter
               console.log('=====ENTER KEY')
@@ -221,130 +281,126 @@ export default {
             case 37:
               //left
               console.log('=====LEFT KEY')
-              currElement.parentNode.previousSibling.lastChild.focus();
-              
-              // self.setNextElementFocus(1, true);
-              e.preventDefault();
+
+              if(type === 'word') {
+                if(key === 0) {
+                  domIdSelector = lastCharIdx;
+                } else {
+                  let nexCharIndex = self.nodeList[key - 1].valList[self.nodeList[key - 1].valList.length - 1].charIndex;
+                  domIdSelector = nexCharIndex;
+                }
+              } else {
+                if(charIndex > 0) {
+                  domIdSelector = charIndex - 1;
+                } else {
+                  domIdSelector = lastCharIdx;
+                } 
+              }             
               break;
-            case 38:
+            case 38: {
               //up
               console.log('=====UP KEY')
-              self.setNextElementFocus(12, true);
-              e.preventDefault();
+              let nexCharIndex = charIndex - self.colCount;
+              if(nexCharIndex < 0) {
+                nexCharIndex = lastCharIdx + 1 + nexCharIndex;
+              }
+              domIdSelector = nexCharIndex;           
               break;
-            case 39:
+            }
+            case 39: {
               //right
               console.log('=====RIGHT KEY')
-              // self.setNextElementFocus(1);
-              // currElement.parentNode.nextSibling.firstChild.focus();
-              e.preventDefault();
+              if(type === 'word') {
+                if(key === lastKeyIdx) {
+                  domIdSelector = 0;
+                } else {
+                  let nexCharIndex = self.nodeList[key + 1].valList[0].charIndex;
+                  domIdSelector = nexCharIndex;
+                }
+              } else {
+                if(charIndex < lastCharIdx) {
+                  domIdSelector = charIndex + 1;
+                } else {
+                  domIdSelector = 0;
+                }
+              }             
               break;
-            case 40:
+            }
+            case 40: {
               //down
               console.log('=====DOWN KEY')
-              self.setNextElementFocus(12);
-              e.preventDefault();
+              let nexCharIndex = charIndex + self.colCount;
+              if(nexCharIndex > lastCharIdx) {
+                nexCharIndex = (nexCharIndex - lastCharIdx) - 1;
+              }
+              domIdSelector = nexCharIndex;
+
               break;
+            }
           }
+          console.log('about to focus', domIdSelector)
+          document.getElementById(`char_${domIdSelector}`).focus();   
         } catch (e) {
           console.log(e);
         }
       };
     },
     onSelect({ node, nodeIdx, charIndex}) {
-      
-      const {
-        key,
-        type,
-        val,
-        valList
-      } = node;
+      try {
+        const {
+          key,
+          type,
+          val,
+          valList
+        } = node;
 
-      console.log('onSelect',
-        key,
-        type,
-        val,
-        valList,
-        nodeIdx,
-        charIndex
-      );
+        console.log('onSelect',
+          key,
+          type,
+          val,
+          valList,
+          nodeIdx,
+          charIndex
+        );
 
-      this.selected = {
-        ...this.selected,
-        key,
-        type,
-        val,
-        valList,
-        nodeIdx,
-        charIndex
+        this.selected = {
+          ...this.selected,
+          key,
+          type,
+          val,
+          valList,
+          nodeIdx,
+          charIndex
+        }
+
+
+
+        const elType = type;
+        if (elType == "word") {
+          this.onWordSelect();
+        } else if (elType == "helper") {
+          this.removeDud();
+          this.appendfeedbackRows("DUD REMOVED");
+        }
       }
-
-
-
-      const elType = type;
-      if (elType == "word") {
-        this.onWordSelect();
-      } else if (elType == "helper") {
-        this.removeDud();
-        this.appendfeedbackRows("DUD REMOVED");
+      catch(e) {
+        console.log('!!!!!!!ERROR-onSelect!!!!!!!!!!!');
+        console.log(e)
       }
     },
     removeDud() {
-      let pw = this.passWord;
+      let pw = this.passWord;      
+      const wordList = this.nodeList.filter(w => w.type === 'word' && w.val !== pw);      
+      const dudWord = wordList[getRandomNumber(0, wordList.length - 1)];        
+      this.dashDud(dudWord.key)
       
-      const wordList = this.leftColData.textList.concat(this.rightColData.textList)
-                          .filter(w => w.type === 'word' && w.val !== pw);      
-      const dudWord = wordList[getRandomNumber(0, wordList.length - 1)];
-
-      let dudIdx;
-      if(dudWord.key <  this.rightColData.textList[0].key) {
-        dudIdx = this.leftColData.textList.findIndex(w => w.key === dudWord.key);
-        this.dashDud(this.leftColData.textList, dudIdx)
-      } else {
-        dudIdx = this.rightColData.textList.findIndex(w => w.key === dudWord.key);
-        this.dashDud(this.rightColData.textList, dudIdx)        
-      }
     },
-    dashDud(list, dudIdx) {
-        console.log('b4', JSON.stringify(list[dudIdx]))
-        list[dudIdx].type = 'filler';        
-        list[dudIdx].valList = list[dudIdx].valList.map(v => ({...v, char: '-'}));
-        list[dudIdx].val = list[dudIdx].valList.map(v => v.char).join('');
-        console.log('af', JSON.stringify(list[dudIdx]))
-    },
-    onElementFocus(data) {
-      // console.log(JSON.stringify(data))
-      // const { key, type, val, charIndex } = data;
-      // this.focusedElementIdx = charIndex;
-      // this.focusedElementKey = key;
-      // this.focusedElementType = type;
-      // this.focusedElementVal = val;
-    },
-    setNextElementFocus(offset, reverse = false) {
-      let currIdx = this.focusedElementIdx;
-      let nextIdx = 0;
-      const lastCharIdx = this.charIndex;
-
-      if (reverse) {
-        if (currIdx - offset >= 1) {
-          
-          nextIdx = currIdx - offset;
-          console.log('curr', document.getElementById(`char_${currIdx}`).dataset.pkey );
-          console.log('next', document.getElementById(`char_${nextIdx}`).dataset.pkey );
-
-        } else {
-          nextIdx = lastCharIdx;
-        }
-      } else {
-        if (currIdx + offset <= lastCharIdx) {
-          nextIdx = currIdx + offset;
-        } else {
-          nextIdx = 1;
-        }
-      }
-
-      this.focusedElementIdx = nextIdx;
-      document.getElementById(`char_${nextIdx}`).focus();
+    dashDud(dudIdx) {
+      this.nodeList[dudIdx].type = 'filler';        
+      this.nodeList[dudIdx].valList.forEach((v) => {
+        v.char = '-';      
+      });
+      this.nodeList[dudIdx].val = this.nodeList[dudIdx].valList.map(v => v.char).join('');
     },
     onWordSelect() {
       let pw = this.passWord;
@@ -386,26 +442,27 @@ export default {
   },
   created() {
     const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
-
     this.loadGameWords();
-
     let nodeList = this.getColumnCharsRowList(this.wordList.slice(0, wordCount));
     this.lastLeftIdx = nodeList[nodeList.length - 1].key;
-
- 
-
-    console.log('last left', nodeList.length - 1, this.lastLeftIdx)
-
-
     nodeList = nodeList.concat(this.getColumnCharsRowList(this.wordList.slice(wordCount, this.wordList.length)));
-    this.lastRightIdx = nodeList[nodeList.length - 1].key;
-
-
-    console.log('last right', nodeList.length - 1, this.lastRightIdx)
-    console.log(nodeList)
-    
+    this.lastRightIdx = nodeList[nodeList.length - 1].key;    
     this.leftColData.hexList = this.loadHexList();
     this.rightColData.hexList = this.loadHexList();
+    this.nodeList = nodeList;
+
+    const [first] = this.nodeList;
+
+    console.log('first', first)
+
+    this.selected = {
+          "key": first.key,
+          "type": first.type,
+          "val": first.val,
+          "valList": [...first.valList],
+          "nodeIdx": 0,
+          "charIndex": 0
+        }
 
     this.applyDomEvents();
   },
