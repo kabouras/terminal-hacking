@@ -9,17 +9,21 @@
             <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
             <div v-if="displayMode === DISPLAY_MODE.GAME">
               <div>ENTER PASSWORD NOW</div>
-              <br />
+
               <div class="game-progress">
                 <div>
+                  <br />
                   {{ attemptsRemaining }} ATTEMPTS(S) LEFT
                   <span v-for="idx in attemptsRemaining" :key="idx"> &#9632; </span>
                 </div>
-                <div>
-                  {{currentStep + 1 }}/{{LEVEL_STEPS[currentLevel]}} STEP 
+                <div class="align-right">      
+                  <div class="align-right" >                
+                    {{currentStep + 1 }}/{{LEVEL_STEPS[currentLevel]}} STEP 
+                    <div><span v-for="idx in timerCount" :key="idx"> &#9632; </span> TIME</div>
+                  </div>            
+                  
                 </div>
-              </div>
-              
+              </div>              
             </div>
           </div>
           <div 
@@ -208,6 +212,7 @@
 import {
   LEVEL_TYPE,
   LEVEL_STEPS,
+  LEVEL_TIMER,
   DISPLAY_MODE,
   WORD_LEVELS,
   LEVEL_COLUMN_WORD_COUNT,
@@ -236,11 +241,18 @@ export default {
   data() {
     return {
       hasStarted: false,
+      requiresDomEvents: true,
       DISPLAY_MODE,
       LEVEL_TYPE,
       LEVEL_STEPS,
+      LEVEL_TIMER,
       ...getInitialData(),
     };
+  },
+  computed: {
+    timerCount() {
+      return parseInt( this.countDown / 5, 10);
+    }
   },
   methods: {
     toggleStarted() {
@@ -390,7 +402,7 @@ export default {
 
       let domIdSelector = null;
 
-      console.log($evt);
+      // console.log($evt);
 
       let keyType = $evt.key;
 
@@ -402,7 +414,7 @@ export default {
         switch (keyType) {
           case "ArrowLeft":
             //left
-            console.log("=====LEFT KEY");
+            // console.log("=====LEFT KEY");
 
             if (type === "word") {
               if (key === 0) {
@@ -424,7 +436,7 @@ export default {
           case "a":
           case "ArrowUp": {
             //up
-            console.log("=====UP KEY");
+            // console.log("=====UP KEY");
             let nexCharIndex = charIndex - this.colCount;
             if (nexCharIndex < 0) {
               nexCharIndex = lastCharIdx + 1 + nexCharIndex;
@@ -434,7 +446,7 @@ export default {
           }
           case "ArrowRight": {
             //right
-            console.log("=====RIGHT KEY");
+            // console.log("=====RIGHT KEY");
             if (type === "word") {
               if (key === lastKeyIdx) {
                 domIdSelector = 0;
@@ -454,7 +466,7 @@ export default {
           case "z":
           case "ArrowDown": {
             //down
-            console.log("=====DOWN KEY");
+            // console.log("=====DOWN KEY");
             let nexCharIndex = charIndex + this.colCount;
             if (nexCharIndex > lastCharIdx) {
               nexCharIndex = nexCharIndex - lastCharIdx - 1;
@@ -465,7 +477,6 @@ export default {
           }
         }
         if (domIdSelector != null) {
-          console.log("about to focus", domIdSelector);
           document.getElementById(`char_${domIdSelector}`).focus();
         }
       } catch (e) {
@@ -536,6 +547,7 @@ export default {
       this.appendfeedbackRows(this.selected.val);
 
       if (allMatch) {
+        this.countDownActive = false;
         this.clearfeedbackRows();
         this.appendfeedbackRows("Exact Match!");
 
@@ -554,15 +566,45 @@ export default {
         
       } else {
         this.attemptsRemaining--;
+        this.resetClock();
         if (this.attemptsRemaining === 0) {
-          this.clearfeedbackRows();
-          this.appendfeedbackRows("Locked Out");
-          this.appendfeedbackRows("NO ATTEMPTS LEFT");
+          this.countDownActive = false;
+          this.lockOut();
         } else {
           this.appendfeedbackRows("Entry Denied");
           this.appendfeedbackRows(`${matchCount}/${pw.length} correct`);
         }
       }
+    },
+    lockOut() {
+      this.clearfeedbackRows();
+      this.appendfeedbackRows("Locked Out");
+      this.appendfeedbackRows("NO ATTEMPTS LEFT");
+    },
+    resetClock() {
+      this.countDown =  this.LEVEL_TIMER[this.currentLevel]
+    },
+    startTimer() {
+      if(this.countDownActive) {
+        if (this.countDown >= 1) {
+            this.countDown--;
+            setTimeout(() => {
+                this.startTimer();
+            }, 1000);
+        } else {
+                                          
+          this.appendfeedbackRows("TIME EXPIRED");
+          this.appendfeedbackRows("attempt removed");
+          this.attemptsRemaining--;
+          if(this.attemptsRemaining > 0) {
+            this.resetClock();            
+          } else {
+            this.countDownActive = false;
+            this.lockOut();
+          }
+                
+        }  
+      }  
     },
     getRandId() {
       return nanoid();
@@ -593,7 +635,6 @@ export default {
       });
       this.initializeGame();
       this.displayMode = DISPLAY_MODE.GAME;
-      // setTimeout(() => this.displayMode = DISPLAY_MODE.GAME, 1700);
     },
     initializeGame() {
       const wordCount = LEVEL_COLUMN_WORD_COUNT[this.currentLevel];
@@ -622,12 +663,17 @@ export default {
         valList: [...first.valList],
         nodeIdx: 0,
         charIndex: 0,
-      };
-      window.addEventListener("keydown", this.handleKeyEvents);
+      };      
+      
+      if(this.requiresDomEvents) {
+        window.addEventListener("keydown", this.handleKeyEvents);
+        this.requiresDomEvents =false;
+      }
+      setTimeout(() => {
+        this.countDownActive = true;
+        this.startTimer();
+      }, 500)
     },
-  },
-  created() {
-    // this.initializeGame();
   },
   destroyed() {
     window.removeEventListener("keydown", this.handleKeyEvents);

@@ -1,16 +1,18 @@
 import {
   LEVEL_TYPE,
+  LEVEL_TIMER,
   DISPLAY_MODE,
 } from "./word.js";
 
 export const getInitialData = (level, step) => {
-  console.log('getInitialData', level, step)
   const currentLevel = level || LEVEL_TYPE.LEVEL_1;
   const currentStep = step || 0;
   return {
     currentLevel,
     currentStep,
     displayMode: DISPLAY_MODE.LOADING,
+    countDown: LEVEL_TIMER[currentLevel],
+    countDownActive: false,
     attemptsRemaining: 4,
     rowCount: 17,
     colCount: 12,

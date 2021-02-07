@@ -12,8 +12,14 @@ export const LEVEL_TYPE = {
 
 export const LEVEL_STEPS = {
   [LEVEL_TYPE.LEVEL_1]: 10,
-  [LEVEL_TYPE.LEVEL_2]: 20,
-  [LEVEL_TYPE.LEVEL_3]: 30,
+  [LEVEL_TYPE.LEVEL_2]: 15,
+  [LEVEL_TYPE.LEVEL_3]: 20,
+};
+
+export const LEVEL_TIMER = {
+  [LEVEL_TYPE.LEVEL_1]: 30,
+  [LEVEL_TYPE.LEVEL_2]: 25,
+  [LEVEL_TYPE.LEVEL_3]: 20,
 };
 
 export const LEVEL_COLUMN_WORD_COUNT = {

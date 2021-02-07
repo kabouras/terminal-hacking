@@ -25,7 +25,7 @@
   border-style: inset;
   padding: 1em;
   height: 621px;
-  width: 812px;
+  width: 847px;
   box-sizing: border-box;
   background:  #000;
 }
@@ -167,7 +167,7 @@
   align-self: flex-end;
 }
 .right {
-  width: 200px;
+  width: 235px;
 }
 
 .noSelect {
@@ -312,4 +312,8 @@ button:focus {
 .lazy-spacer {
   color: transparent !important;
   text-shadow: none !important;
+}
+
+.align-right {
+  text-align: right;
 }
