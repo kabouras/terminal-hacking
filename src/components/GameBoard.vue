@@ -460,6 +460,29 @@ export default {
   );
 }
 
+@keyframes scanlineframe {
+  from {top : -500px;}
+  to {top : 1000px;}
+}
+
+
+.inner::before {
+  content: " ";
+  position: absolute;
+  top: -500px;
+  left: 0;
+  right: 0;  
+  background-image: linear-gradient(rgba(0,255,51, .07), rgba(0,255,51, .02));
+  height: 375px;
+  pointer-events: none;
+  animation-name: scanlineframe;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+
+
 .row {
   display: flex;
 }
