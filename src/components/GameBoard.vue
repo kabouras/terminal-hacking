@@ -5,7 +5,7 @@
         <div class="top">
           <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
           <div>
-            ENTER PASSWORD NOW  -- {{lastLeftIdx}} -- {{lastRightIdx}}
+            ENTER PASSWORD NOW
           </div>
           <br />
           <div>
@@ -102,33 +102,6 @@ export default {
   },
   data() {
     return getInitialData();
-    // return {
-    //   currentLevel: LEVEL_TYPE.LEVEL_1,
-    //   attemptsRemaining: 4,
-    //   rowCount: 17,
-    //   colCount: 12,
-    //   hexValue: 63300,
-    //   tabIndex: 0,
-    //   charIndex: 0,
-    //   nodeList: [],
-    //   leftColData: {
-    //     hexList: [],
-    //     textList: [],
-    //   },
-    //   rightColData: {
-    //     hexList: [],
-    //     textList: [],
-    //   },
-    //   feedbackRows: [],
-    //   feedbackRowsKey: 1,
-    //   wordList: [],
-    //   passWord: "",
-    //   fillerChars: "~!@#$%^&_-+=\\?/,:;*.",
-    //   origKeyDown: null,
-    //   selected: {},
-    //   lastLeftIdx: 0,
-    //   lastRightIdx: 0,
-    // };
   },
   methods: {
     getHexString() {
@@ -467,6 +440,8 @@ export default {
   border-radius: 1em;
   border-style: inset;
   padding: 1em;
+  height: 621px;
+  box-sizing: border-box;
 }
 
 .inner::after {
@@ -491,6 +466,8 @@ export default {
 .col {
   align-self: flex-end;
   display: flex;
+  width: 266px;
+  box-sizing: border-box;
 }
 
 .col,
@@ -558,7 +535,7 @@ export default {
   align-self: flex-end;
 }
 .right {
-  width: 180px;
+  width: 200px;
 }
 
 .noSelect {
