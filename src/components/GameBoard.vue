@@ -75,7 +75,7 @@
 
 <script>
 import {
-  LEVEL_TYPE,
+  // LEVEL_TYPE,
   WORD_LEVELS,
   LEVEL_COLUMN_WORD_COUNT,
   LEVEL_WORD_LENGTH,

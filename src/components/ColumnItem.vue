@@ -26,7 +26,7 @@ export default {
     },
     node: {
       type: Object,
-      default: {},
+      default: () => ({}),
     },
     onFocus: {
       type: Function,
