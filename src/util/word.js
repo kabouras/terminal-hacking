@@ -23,7 +23,7 @@ export const LEVEL_COLUMN_WORD_COUNT = {
 };
 
 export const LEVEL_COLUMN_HELP_COUNT = {
-  [LEVEL_TYPE.LEVEL_1]: 4,
+  [LEVEL_TYPE.LEVEL_1]: 2,
   [LEVEL_TYPE.LEVEL_2]: 2,
   [LEVEL_TYPE.LEVEL_3]: 1,
 };
