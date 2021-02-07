@@ -7,10 +7,11 @@
       :title="`char_${val.charIndex}`"
       :id="`char_${val.charIndex}`"
       :tabindex="node.key"      
-      :class="{active: isActive}"
+      :class="{active: (isActive && (node.type !== 'filler' || node.type === 'filler' && node.charIndex === val.charIndex))}"
       :data-key="node.key"
-      @click.stop="($evt) => handleSelect($evt, { node, nodeIdx: idx, charIndex: val.charIndex })"
-      @focus.stop="($evt) => handleSelect($evt, { node, nodeIdx: idx, charIndex: val.charIndex })"
+      v-on:keyup.enter="($evt) => handleSelect($evt, 'select',  { node, nodeIdx: idx, charIndex: val.charIndex })"
+      @dblclick.stop="($evt) => handleSelect($evt, 'select', { node, nodeIdx: idx, charIndex: val.charIndex })"
+      @focus.stop="($evt) => handleSelect($evt, 'navigate', { node, nodeIdx: idx, charIndex: val.charIndex })"
       class="char-span text-btn"
     />
   </span>
@@ -37,35 +38,29 @@ export default {
   },
   data() {
     return {
-      hasDudReported: false,
       selectedFiller: false
     }
   },
   computed: {
     isActive() {
-      return this.node.key === this.selected.key && !this.selectedFiller && !this.hasDudReported;
+      return this.node.key === this.selected.key && !this.selectedFiller //&& this.node.type !== 'filler';
     }
   },
   methods: {
-    handleSelect($evt, data) {
+    handleSelect($evt, command, data) {
       try {
         $evt.preventDefault();
         $evt.stopPropagation();
 
-        console.log('EVENT', $evt.type)
+        console.log('EVENT', $evt.type, new Date().toString())
 
         const { nodeIdx } = data;
         const { type, valList } = data.node;
         let publishType = type;
 
-        if(this.hasDudReported) {
-          publishType = 'filler';
-        } else if (type === 'helper' && valList.length > 2 && nodeIdx > 0 && nodeIdx < valList.length - 1) {
+        if (type === 'helper' && valList.length > 2 && nodeIdx > 0 && nodeIdx < valList.length - 1) {
           publishType = 'filler';
           this.selectedFiller = true;
-        } else if(type === 'helper') {
-          this.hasDudReported = true;
-          this.selectedFiller = false;
         } else {
           this.selectedFiller = false;
         }
@@ -76,7 +71,7 @@ export default {
             ...data.node,
             type: publishType,
           },
-          eventType: $evt.type
+          command
         }
 
         this.onSelect(payload);

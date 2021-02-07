@@ -13,11 +13,14 @@
             <span v-for="idx in attemptsRemaining" :key="idx"> &#9632; </span>
           </div>
         </div>
-        <div class="row">
+        <div 
+          class="row"
+          v-if="nodeList && nodeList.length === lastRightIdx+ 1"
+        >
           <div class="col left">
             <PuzzleColumn
               :colData="leftColData"
-              v-if="nodeList && nodeList.length === lastRightIdx+ 1"
+              
             >
               <ColumnItem 
                 v-for="node in nodeList.slice(0, lastLeftIdx + 1)"                
@@ -31,7 +34,6 @@
           <div class="col middle">
             <PuzzleColumn
               :colData="rightColData"
-              v-if="nodeList && nodeList.length === lastRightIdx+ 1"
             >
               <ColumnItem 
                 v-for="node in nodeList.slice(lastLeftIdx + 1, lastRightIdx + 1)"                
@@ -218,66 +220,34 @@ export default {
         val,
       });
     },
-    getDomData() {
-      console.log('getDomData', JSON.stringify(this.selected, null, '\t'));
-      
-
-      
-    
-      // let currIdx = this.focusedElementIdx;
-      // let nextIdx = 0;
-      // const lastCharIdx = this.charIndex;
-
-      // if (reverse) {
-      //   if (currIdx - offset >= 1) {
-          
-      //     nextIdx = currIdx - offset;
-      //     console.log('curr', document.getElementById(`char_${currIdx}`).dataset.pkey );
-      //     console.log('next', document.getElementById(`char_${nextIdx}`).dataset.pkey );
-
-      //   } else {
-      //     nextIdx = lastCharIdx;
-      //   }
-      // } else {
-      //   if (currIdx + offset <= lastCharIdx) {
-      //     nextIdx = currIdx + offset;
-      //   } else {
-      //     nextIdx = 1;
-      //   }
-      // }
-
-      // this.focusedElementIdx = nextIdx;
-      // document.getElementById(`char_${nextIdx}`).focus();
-    
-    },
     applyDomEvents() {
       let self = this;
+
       this.origKeyDown = document.onkeydown;
       document.onkeydown = function ($evt) {
         $evt.preventDefault();
         
 
-        console.log('applyDomEvents', JSON.stringify(self.selected, null, '\t'));
+        // console.log('applyDomEvents', JSON.stringify(self.selected, null, '\t'));
 
-        const { charIndex, key, valList, type } = self.selected;
+        const { charIndex, key, type } = self.selected;
         
 
         const lastKeyIdx = self.lastRightIdx;
         const lastCharIdx = self.nodeList[self.lastRightIdx].valList[self.nodeList[self.lastRightIdx].valList.length-1].charIndex;
-        const firstCharInCurrent = valList[0].charIndex;
-        const lastCharInCurrent = valList[valList.length -1].charIndex;
-
+        
         console.log(JSON.stringify({charIndex, key, lastKeyIdx, lastCharIdx}));
 
         let domIdSelector = '';
 
         try {
           switch ($evt.keyCode) {
-            case 13:
-              // enter
-              console.log('=====ENTER KEY')
-              // self.onSelect();
-              break;
+            // case 13:
+            //   // enter
+            //   console.log('=====ENTER KEY')
+            //   document.getElementById(`char_${charIndex}`).click().click();
+            //   // document.getElementById(`char_${charIndex}`).click();
+            //   return false;
             case 37:
               //left
               console.log('=====LEFT KEY')
@@ -338,14 +308,16 @@ export default {
               break;
             }
           }
-          console.log('about to focus', domIdSelector)
-          document.getElementById(`char_${domIdSelector}`).focus();   
+          if(domIdSelector) {
+            console.log('about to focus', domIdSelector)
+            document.getElementById(`char_${domIdSelector}`).focus();
+          }
         } catch (e) {
           console.log(e);
         }
       };
     },
-    onSelect({ node, nodeIdx, charIndex}) {
+    onSelect({ command, node, nodeIdx, charIndex}) {
       try {
         const {
           key,
@@ -370,17 +342,18 @@ export default {
           val,
           valList,
           nodeIdx,
-          charIndex
+          charIndex,
+          command
         }
 
-
-
-        const elType = type;
-        if (elType == "word") {
-          this.onWordSelect();
-        } else if (elType == "helper") {
-          this.removeDud();
-          this.appendfeedbackRows("DUD REMOVED");
+        if(command === 'select') {
+          const elType = type;
+          if (elType == "word") {
+            this.onWordSelect();
+          } else if (elType == "helper") {
+            this.removeDud();
+            this.appendfeedbackRows("DUD REMOVED");
+          }
         }
       }
       catch(e) {
@@ -389,13 +362,15 @@ export default {
       }
     },
     removeDud() {
-      let pw = this.passWord;      
+      let pw = this.passWord;  
       const wordList = this.nodeList.filter(w => w.type === 'word' && w.val !== pw);      
       const dudWord = wordList[getRandomNumber(0, wordList.length - 1)];        
-      this.dashDud(dudWord.key)
+      this.dashDud(this.selected.key);
+      this.dashDud(dudWord.key);
       
     },
     dashDud(dudIdx) {
+      // this.nodeList[this.selected.key].type = 'filler';
       this.nodeList[dudIdx].type = 'filler';        
       this.nodeList[dudIdx].valList.forEach((v) => {
         v.char = '-';      
@@ -467,7 +442,7 @@ export default {
     this.applyDomEvents();
   },
   destroyed() {
-    document.onkeydown = this.origKeyDown;
+    // document.onkeydown = this.origKeyDown;
   },
 };
 </script>
