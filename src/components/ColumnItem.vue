@@ -11,7 +11,7 @@
       :data-key="node.key"
       v-on:keyup.enter="($evt) => handleSelect($evt, 'select',  { node, nodeIdx: idx, charIndex: val.charIndex })"
       @dblclick.stop="($evt) => handleSelect($evt, 'select', { node, nodeIdx: idx, charIndex: val.charIndex })"
-      @focus.stop="($evt) => handleSelect($evt, 'navigate', { node, nodeIdx: idx, charIndex: val.charIndex })"
+      @focus.stop="($evt) => handleSelect($evt, 'focus', { node, nodeIdx: idx, charIndex: val.charIndex })"
       class="char-span text-btn"
     />
   </span>
@@ -51,8 +51,6 @@ export default {
       try {
         $evt.preventDefault();
         $evt.stopPropagation();
-
-        console.log('EVENT', $evt.type, new Date().toString())
 
         const { nodeIdx } = data;
         const { type, valList } = data.node;

@@ -226,28 +226,15 @@ export default {
       this.origKeyDown = document.onkeydown;
       document.onkeydown = function ($evt) {
         $evt.preventDefault();
-        
-
-        // console.log('applyDomEvents', JSON.stringify(self.selected, null, '\t'));
 
         const { charIndex, key, type } = self.selected;
-        
-
         const lastKeyIdx = self.lastRightIdx;
         const lastCharIdx = self.nodeList[self.lastRightIdx].valList[self.nodeList[self.lastRightIdx].valList.length-1].charIndex;
         
-        console.log(JSON.stringify({charIndex, key, lastKeyIdx, lastCharIdx}));
-
         let domIdSelector = '';
 
         try {
           switch ($evt.keyCode) {
-            // case 13:
-            //   // enter
-            //   console.log('=====ENTER KEY')
-            //   document.getElementById(`char_${charIndex}`).click().click();
-            //   // document.getElementById(`char_${charIndex}`).click();
-            //   return false;
             case 37:
               //left
               console.log('=====LEFT KEY')
@@ -425,10 +412,7 @@ export default {
     this.leftColData.hexList = this.loadHexList();
     this.rightColData.hexList = this.loadHexList();
     this.nodeList = nodeList;
-
     const [first] = this.nodeList;
-
-    console.log('first', first)
 
     this.selected = {
           "key": first.key,
