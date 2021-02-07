@@ -1,7 +1,7 @@
 <template>
   <div class="puzzle-column">
     <div>
-      <div v-for="row in colData.hexList" :key="row.key" class="hex">
+      <div v-for="row in hexList" :key="row.key" class="hex">
         {{ row.val }}
       </div>
     </div>
@@ -14,10 +14,10 @@
 export default {
   name: "PuzzleColumn",
   props: {
-    colData: {
-      type: Object,
+    hexList: {
+      type: Array,
       default: function () {
-        return { hexList: [] };
+        return [];
       },
     }
   },

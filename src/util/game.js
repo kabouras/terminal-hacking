@@ -1,11 +1,12 @@
 import {
   LEVEL_TYPE,
+  DISPLAY_MODE,
 } from "./word.js";
-
 
 export const getInitialData = (currentLevel = LEVEL_TYPE.LEVEL_1) => {
   return {
     currentLevel,
+    displayMode: DISPLAY_MODE.LOADING,
     attemptsRemaining: 4,
     rowCount: 17,
     colCount: 12,
@@ -13,14 +14,8 @@ export const getInitialData = (currentLevel = LEVEL_TYPE.LEVEL_1) => {
     tabIndex: 0,
     charIndex: 0,
     nodeList: [],
-    leftColData: {
-      hexList: [],
-      textList: [],
-    },
-    rightColData: {
-      hexList: [],
-      textList: [],
-    },
+    leftHexList: [],
+    rightHexList: [],
     feedbackRows: [],
     feedbackRowsKey: 1,
     wordList: [],

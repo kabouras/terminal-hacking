@@ -1,3 +1,9 @@
+export const DISPLAY_MODE = {
+  LOADING: 'LOADING',
+  GAME: 'GAME',
+  CREDITS: 'CREDITS'
+}
+
 export const LEVEL_TYPE = {
   LEVEL_1: 'LEVEL_1',
   LEVEL_2: 'LEVEL_2',
