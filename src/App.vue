@@ -16,29 +16,7 @@ export default {
   name: 'App',
   components: {
     GameBoard
-  }
+  }  
 }
 </script>
 
-<style>
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: 'VT323', monospace;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  font-size: 16px;
-  letter-spacing: 2px;
-}
-
-h1 {
-  font-size: 3em;
-  margin: 0;
-}
-
-body {
-  background-color: rgba(0,0,0,.1);
-}
-
-</style>

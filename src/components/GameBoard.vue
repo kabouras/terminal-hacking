@@ -192,7 +192,7 @@
         </div>
       </div>
     </div>
-    <pre style="color: black"
+    <pre style="display: none"
       >{{
         JSON.stringify(
           {
@@ -667,6 +667,7 @@ export default {
       
       if(this.requiresDomEvents) {
         window.addEventListener("keydown", this.handleKeyEvents);
+        window.addEventListener("resize", this.scaleScreen);
         this.requiresDomEvents =false;
       }
       setTimeout(() => {
@@ -674,9 +675,30 @@ export default {
         this.startTimer();
       }, 500)
     },
+    scaleScreen() {
+      const naturalHeight = 835;
+      const heightRatio = .9;
+      const heightThatFits = heightRatio * window.innerHeight;
+
+      const transformRatio = heightThatFits / naturalHeight;
+
+      console.log("heightThatFits", heightThatFits)
+      const translate = (naturalHeight - heightThatFits + 30) /2;
+      console.log("translate", translate / 2)
+
+      console.log('Adjusting the things')
+      document.getElementById('app').style.transform = "translate(0, -"+ translate + "px) " + "scale(" + transformRatio + ")";
+      
+      
+        
+    }
+  },
+  mounted() {
+    this.scaleScreen()
   },
   destroyed() {
     window.removeEventListener("keydown", this.handleKeyEvents);
+    window.removeEventListener("resize", this.scaleScreen);
   },
 };
 </script>
