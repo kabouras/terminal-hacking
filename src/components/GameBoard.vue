@@ -676,6 +676,7 @@ export default {
       }, 500)
     },
     scaleScreen() {
+      return false;
       const naturalHeight = 835;
       const heightRatio = .9;
       const heightThatFits = heightRatio * window.innerHeight;
