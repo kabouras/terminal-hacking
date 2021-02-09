@@ -5,7 +5,7 @@
         {{ row.val }}
       </div>
     </div>
-    <div class="text">
+    <div class="text col-grid">
       <slot />
     </div>
   </div>

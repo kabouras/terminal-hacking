@@ -1,9 +1,9 @@
 <template>
-  <span>
+
     <span
       v-for="(val, idx) in node.valList"
       :key="val.charIndex"
-      v-html="`${val.char}&#8203;`"
+      v-html="`${val.char}`"
       :title="`char_${val.charIndex} -- node.charIndex ${selected.charIndex} val.charIndex ${val.charIndex}`"
       :id="`char_${val.charIndex}`"
       :tabindex="node.key"      
@@ -15,7 +15,7 @@
       @focus.stop="($evt) => handleSelect($evt, 'focus', { node, nodeIdx: idx, charIndex: val.charIndex })"
       class="char-span noSelect text-btn"
     />
-  </span>
+
 </template>
 <script>
 export default {

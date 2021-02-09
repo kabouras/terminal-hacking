@@ -11,7 +11,7 @@ html, body {
 
 h1 {
   font-size: 3em;
-  margin: .5em;
+  margin: .25em;
 }
 
 body {
@@ -24,7 +24,8 @@ body {
   display: inline-block;
   color: #00ff66;
   text-shadow: 0 0 5px #00ff33;
-  font-size: 1.5em;
+  font-size: 1.4em;
+  line-height: 1;
   text-align: left;
   border-radius: 2em;
   letter-spacing: 3px;
@@ -45,9 +46,6 @@ body {
   border: solid 16px #aaa9ad;
   border-radius: 1em;
   border-style: inset;
-  padding: 1em;
-  height: 621px;
-  width: 847px;
   box-sizing: border-box;
   background:  #000;
 }
@@ -101,6 +99,9 @@ body {
   animation-timing-function: ease-in-out;
 }
 
+.main-screen {
+  display: flex;
+}
 
 
 .row {
@@ -109,14 +110,12 @@ body {
 .col {
   align-self: flex-end;
   display: flex;
-  width: 266px;
   box-sizing: border-box;
 }
 
-.col,
-.msg,
-.top {
-  padding: 0.35em;
+.col-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
 }
 
 .msg .sub {
@@ -136,8 +135,6 @@ body {
   margin-right: 0.45em;
 }
 .text {
-  /* width: 12ch; */
-  width: 162px; 
   box-sizing: border-box;
 }
 .text, .text-btn{ 
@@ -151,7 +148,6 @@ body {
 	color: inherit;
 	border: none;
 	padding: 0;
-	font: inherit;
 	cursor: pointer;
 	outline: inherit;
   
@@ -192,6 +188,7 @@ body {
   width: 235px;
 }
 
+.lazy-spacer,
 .noSelect {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -324,6 +321,10 @@ body {
   right: 5px;
 }
 
+.logo-img {
+  height:36px;
+}
+
 *{
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
 }
@@ -334,6 +335,7 @@ button:focus {
 .lazy-spacer {
   color: transparent !important;
   text-shadow: none !important;
+  pointer-events: none;
 }
 
 .align-right {

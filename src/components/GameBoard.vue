@@ -4,133 +4,150 @@
       <div class="inner"
         :class="{active: hasStarted}"
       >
-        <div v-if="hasStarted">
-          <div class="top">
-            <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
-            <div v-if="displayMode === DISPLAY_MODE.GAME">
-              <div>ENTER PASSWORD NOW</div>
+        <div>
+          <span class="lazy-spacer" v-for="idx in screenCols" :key="idx">.</span>
+        </div>
+        <div class="main-screen">
+          <div>
+            <div class="lazy-spacer" v-for="idx in screenRows" :key="idx">..</div>
+          </div>
+          <div v-if="hasStarted">
+            <div class="top">
+              <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
+              <div v-if="displayMode === DISPLAY_MODE.GAME">
+                <div>ENTER PASSWORD NOW</div>
 
-              <div class="game-progress">
-                <div>
+                <div class="game-progress">
+                  <div>
+                    <br />
+                    {{ attemptsRemaining }} ATTEMPTS(S) LEFT
+                    <span v-for="idx in attemptsRemaining" :key="idx"> &#9632; </span>
+                    <br /><br />
+                  </div>
+                  <div class="align-right">      
+                    <div class="align-right" >                
+                      {{currentStep + 1 }}/{{LEVEL_STEPS[currentLevel]}} STEP 
+                      <div><span v-for="idx in timerCount" :key="idx"> &#9632; </span> TIME</div>
+                    </div>            
+                    
+                  </div>
+                </div>              
+              </div>
+            </div>
+            <div 
+              class="msg"
+              v-if="displayMode === DISPLAY_MODE.LOADING"
+            >
+              LOADING...<span class="text-btn active">.</span>
+              <br /><br /><br />
+              <div>
+                CONTROLS
+              </div>
+              <div class="sub">
+                SINGLE CLICK / CURSOR KEY...inspect<br />
+                DOUBLE CLICK / ENTER  KEY....select<br />
+              </div>
+              <br /><br />  
+              <div>
+                ELEMENTS
+              </div>
+              <div class="sub">
+                WORDS.......................Possible Passwords<br />
+
+                BRACKET GROUPS..............Remove "dud" passwords
+              </div>
+              <div class="sub">
+                
+              </div>
+            </div>
+            <div 
+              class="msg"
+              v-if="displayMode === DISPLAY_MODE.CREDITS"
+            >
+              <div>
+                <span class="lazy-spacer">.</span>
+                <span class="lazy-spacer">.</span>
+                <span class="lazy-spacer">.</span>
+                <span class="lazy-spacer">.</span>
+                | |
+              </div>
+              <div>
+                <span class="lazy-spacer">.</span>
+                
+                (\(<span class="lazy-spacer">.</span>_<span class="lazy-spacer">.</span>)/)
+              </div>
+              <div>
+
+                <span class="lazy-spacer">.</span>
+                <span class="lazy-spacer">.</span>
+                <span class="lazy-spacer">.</span>
+                <span v-html="'&#123;&#123;'" />
+                <span class="lazy-spacer">.</span>
+                <span class="lazy-spacer">.</span>
+                }}
+              </div>
+              <br /><br />
+              <div>Thank you for playing!<br /><br /><br /></div>
+              <div>
+                This project was inspired by the terminal hacking mini game in our favourte RPG series.
+                <br /><br />
+              </div>
+              <div>
+                Originally made with love that turned a grind and appreciation for the effort in the little things.
+                <br /><br />
+              </div>
+              <div>
+                Toggle the start button to play again.
+              </div>
+            </div>
+            <div
+              class="row"
+              v-if="displayMode === DISPLAY_MODE.GAME && nodeList && nodeList.length === lastRightIdx + 1"
+            >
+              <div class="col left">
+                <PuzzleColumn :hexList="leftHexList">
+                  <ColumnItem
+                    v-for="node in nodeList.slice(0, lastLeftIdx + 1)"
+                    :key="node.key"
+                    :node="node"
+                    :onSelect="onSelect"
+                    :selected="selected"
+                  />
+                </PuzzleColumn>
+              </div>
+              <span class="lazy-spacer">..</span>
+              <div class="col middle">
+                <PuzzleColumn :hexList="rightHexList">
+                  <ColumnItem
+                    v-for="node in nodeList.slice(
+                      lastLeftIdx + 1,
+                      lastRightIdx + 1
+                    )"
+                    :key="node.key"
+                    :node="node"
+                    :onSelect="onSelect"
+                    :selected="selected"
+                  />
+                </PuzzleColumn>
+              </div>
+              <span class="lazy-spacer">..</span>
+              <div class="col right">
+                <div>                
+                  <div v-for="row in feedbackRows" :key="row.key">
+                    >{{ row.val }}
+                  </div>
                   <br />
-                  {{ attemptsRemaining }} ATTEMPTS(S) LEFT
-                  <span v-for="idx in attemptsRemaining" :key="idx"> &#9632; </span>
+                  <div>></div>
                 </div>
-                <div class="align-right">      
-                  <div class="align-right" >                
-                    {{currentStep + 1 }}/{{LEVEL_STEPS[currentLevel]}} STEP 
-                    <div><span v-for="idx in timerCount" :key="idx"> &#9632; </span> TIME</div>
-                  </div>            
-                  
-                </div>
-              </div>              
-            </div>
-          </div>
-          <div 
-            class="msg"
-            v-if="displayMode === DISPLAY_MODE.LOADING"
-          >
-            LOADING...<span class="text-btn active">.</span>
-            <br /><br /><br />
-            <div>
-              CONTROLS
-            </div>
-            <div class="sub">
-              SINGLE CLICK / CURSOR KEY...inspect<br />
-              DOUBLE CLICK / ENTER  KEY....select<br />
-            </div>
-            <br /><br />  
-            <div>
-              ELEMENTS
-            </div>
-            <div class="sub">
-              WORDS.......................Possible Passwords<br />
-
-              BRACKET GROUPS..............Remove "dud" passwords
-            </div>
-            <div class="sub">
-              
-            </div>
-          </div>
-          <div 
-            class="msg"
-            v-if="displayMode === DISPLAY_MODE.CREDITS"
-          >
-            <div>
-              <span class="lazy-spacer">.</span>
-              <span class="lazy-spacer">.</span>
-              <span class="lazy-spacer">.</span>
-              <span class="lazy-spacer">.</span>
-              | |
-            </div>
-            <div>
-              <span class="lazy-spacer">.</span>
-              
-              (\(<span class="lazy-spacer">.</span>_<span class="lazy-spacer">.</span>)/)
-            </div>
-            <div>
-
-              <span class="lazy-spacer">.</span>
-              <span class="lazy-spacer">.</span>
-              <span class="lazy-spacer">.</span>
-              <span v-html="'&#123;&#123;'" />
-              <span class="lazy-spacer">.</span>
-              <span class="lazy-spacer">.</span>
-              }}
-            </div>
-            <br /><br />
-            <div>Thank you for playing!<br /><br /><br /></div>
-            <div>
-              This project was inspired by the terminal hacking mini game in our favourte RPG series.
-              <br /><br />
-            </div>
-            <div>
-              Originally made with love that turned a grind and appreciation for the effort in the little things.
-              <br /><br />
-            </div>
-            <div>
-              Toggle the start button to play again.
-            </div>
-          </div>
-          <div
-            class="row"
-            v-if="displayMode === DISPLAY_MODE.GAME && nodeList && nodeList.length === lastRightIdx + 1"
-          >
-            <div class="col left">
-              <PuzzleColumn :hexList="leftHexList">
-                <ColumnItem
-                  v-for="node in nodeList.slice(0, lastLeftIdx + 1)"
-                  :key="node.key"
-                  :node="node"
-                  :onSelect="onSelect"
-                  :selected="selected"
-                />
-              </PuzzleColumn>
-            </div>
-            <div class="col middle">
-              <PuzzleColumn :hexList="rightHexList">
-                <ColumnItem
-                  v-for="node in nodeList.slice(
-                    lastLeftIdx + 1,
-                    lastRightIdx + 1
-                  )"
-                  :key="node.key"
-                  :node="node"
-                  :onSelect="onSelect"
-                  :selected="selected"
-                />
-              </PuzzleColumn>
-            </div>
-            <div class="col right">
-              <div>                
-                <div v-for="row in feedbackRows" :key="row.key">
-                  >{{ row.val }}
-                </div>
-                <br />
-                <div>></div>
               </div>
             </div>
           </div>
+          <div>
+            <div class="lazy-spacer" v-for="idx in screenRows" :key="idx">..</div>
+          </div>
+        </div>
+        <div>
+          <span class="lazy-spacer" v-for="idx in screenCols" :key="idx">.</span>
         </div>
       </div>
       <div class="ctrl-btn-wrap">
@@ -142,7 +159,7 @@
           <div class="logo">
             CRABCO Terminal
             <div style="text-align: center">
-              <img src="@/assets/crabflat-grey.svg" height="36px" />
+              <img class="logo-img" src="@/assets/crabflat-grey.svg"  />
             </div>
           </div>
         </div>
@@ -483,8 +500,11 @@ export default {
         console.log(e);
       }
     },
-    onSelect({ command, node, nodeIdx, charIndex }) {
+    onSelect({ command, node, nodeIdx, charIndex }) {      
       try {
+        if (this.attemptsRemaining < 1) {
+          return false;
+        }
         const { key, type, val, valList } = node;
 
         this.selected = {
@@ -585,10 +605,12 @@ export default {
       this.countDown =  this.LEVEL_TIMER[this.currentLevel]
     },
     startTimer() {
+      console.log('This start timer')
+      let timeoutRef;
       if(this.countDownActive) {
         if (this.countDown >= 1) {
             this.countDown--;
-            setTimeout(() => {
+            timeoutRef = setTimeout(() => {
                 this.startTimer();
             }, 1000);
         } else {
@@ -597,7 +619,9 @@ export default {
           this.appendfeedbackRows("attempt removed");
           this.attemptsRemaining--;
           if(this.attemptsRemaining > 0) {
-            this.resetClock();            
+            clearTimeout(timeoutRef)
+            this.resetClock(); 
+            this.startTimer();   
           } else {
             this.countDownActive = false;
             this.lockOut();
@@ -667,7 +691,7 @@ export default {
       
       if(this.requiresDomEvents) {
         window.addEventListener("keydown", this.handleKeyEvents);
-        window.addEventListener("resize", this.scaleScreen);
+        // window.addEventListener("resize", this.scaleScreen);
         this.requiresDomEvents =false;
       }
       setTimeout(() => {
@@ -676,7 +700,7 @@ export default {
       }, 500)
     },
   },
-  destroyed() {
+  unmounted() {
     window.removeEventListener("keydown", this.handleKeyEvents);
   },
 };
