@@ -15,7 +15,7 @@ export const getInitialData = (level, step) => {
     countDownActive: false,
     attemptsRemaining: 4,
     screenRows: 22,
-    screenCols: 65,
+    screenCols: 66,
     rowCount: 17,
     colCount: 12,
     hexValue: 63300,

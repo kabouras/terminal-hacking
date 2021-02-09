@@ -19,6 +19,7 @@ body {
   overflow: hidden;
 }
 
+.container { text-align:  center;}
 
 #gameboard {
   display: inline-block;
@@ -30,6 +31,17 @@ body {
   border-radius: 2em;
   letter-spacing: 3px;
 }
+
+
+@media screen and (max-width: 992px) {
+  h1 {
+    font-size: 2em;
+  }
+  #gameboard {
+    font-size: 1em !important;
+  }
+}
+
 
 .outer {
   background: #3d3635;
@@ -119,8 +131,8 @@ body {
 }
 
 .msg .sub {
-  padding-left: 38px;
-  padding-top: 36px;
+  /* padding-left: 38px;
+  padding-top: 36px; */
 }
 
 .game-progress {
@@ -131,9 +143,7 @@ body {
 .puzzle-column {
   display: flex
 }
-.hex {
-  margin-right: 0.45em;
-}
+
 .text {
   box-sizing: border-box;
 }

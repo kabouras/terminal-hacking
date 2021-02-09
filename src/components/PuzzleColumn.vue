@@ -5,6 +5,7 @@
         {{ row.val }}
       </div>
     </div>
+    <span class="lazy-spacer">.</span>
     <div class="text col-grid">
       <slot />
     </div>
