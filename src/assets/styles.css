@@ -33,7 +33,7 @@ body {
 }
 
 
-@media screen and (max-width: 992px) {
+@media screen and (max-height: 700px  ) and (orientation: landscape){
   h1 {
     font-size: 2em;
   }
@@ -41,6 +41,17 @@ body {
     font-size: 1em !important;
   }
 }
+
+@media screen and (max-width: 900px  ) {
+  h1 {
+    font-size: 2em;
+  }
+  #gameboard {
+    font-size: 1em !important;
+  }
+}
+
+
 
 
 .outer {
@@ -128,11 +139,6 @@ body {
 .col-grid {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-}
-
-.msg .sub {
-  /* padding-left: 38px;
-  padding-top: 36px; */
 }
 
 .game-progress {
@@ -281,8 +287,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 5px;
-  padding-bottom: 8px;
+  margin-top: 6px;
+  padding-bottom: 9px;
 }
 
 .level-btn.middle {
