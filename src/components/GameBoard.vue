@@ -193,7 +193,7 @@
             </div>
           </div>
         </div>
-        <div class="btn-panel">
+        <div class="btn-panel" style="padding-bottom:0">
           <div class="screw screw-a" />
           <div class="screw screw-b" />
           <div class="screw screw-c" />
