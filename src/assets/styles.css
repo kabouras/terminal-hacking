@@ -19,35 +19,68 @@ body {
   overflow: hidden;
 }
 
-.container { text-align:  center;}
+.container { 
+  text-align:  center;
+  margin-top: 2em;
+}
 
 #gameboard {
   display: inline-block;
-  color: #00ff66;
-  text-shadow: 0 0 5px #00ff33;
   font-size: 1.4em;
   line-height: 1;
   text-align: left;
   border-radius: 2em;
   letter-spacing: 3px;
 }
+#gameboard, .modal {
+  color: #00ff66;
+  text-shadow: 0 0 5px #00ff33;
+}
 
+.shround {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(61, 54, 53, .5);
+  z-index: 100;
+  pointer-events: none;
+}
+.modal {
+  max-width: 700px;  
+  margin: 0 auto;
+  margin-top: 5em;
+  font-size: 2.5em;
+  pointer-events: none;
+}
 
 @media screen and (max-height: 700px  ) and (orientation: landscape){
-  h1 {
+  .modal {
     font-size: 2em;
+    margin-top: 3em;
+    max-width: 550px;  
   }
   #gameboard {
-    font-size: 1em !important;
+    font-size: 1.125em !important;
+  }
+  .container {
+    margin: 1em;
   }
 }
 
 @media screen and (max-width: 900px  ) {
-  h1 {
+  .modal {
     font-size: 2em;
+    margin-top: 3em;
+    max-width: 550px;  
   }
   #gameboard {
-    font-size: 1em !important;
+    font-size: 1.125em !important;
+  }
+
+  .container {
+    margin-top: 1em;
   }
 }
 
