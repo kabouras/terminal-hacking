@@ -71,6 +71,7 @@ body {
   border-style: inset;
   box-sizing: border-box;
   background:  #000;
+  min-width: 699px;
 }
 
 .inner.active {
@@ -236,6 +237,7 @@ body {
   position: relative;
   margin-right: 10px;
   background: #caccce;
+
   border-radius: 4px;
   box-shadow: 1px 1px 2px #000;
   display: flex;
