@@ -1,7 +1,8 @@
 export const DISPLAY_MODE = {
   LOADING: 'LOADING',
   GAME: 'GAME',
-  CREDITS: 'CREDITS'
+  CREDITS: 'CREDITS',
+	OVER: 'OVER'
 }
 
 export const LEVEL_TYPE = {

@@ -62,6 +62,19 @@
             </div>
             <div 
               class="msg animate__animated animate__fadeIn"
+              v-if="displayMode === DISPLAY_MODE.OVER"
+            >
+              <br /><br />
+              ***ACCESS DENIED***
+              <br /><br />
+              <AsciiCrab />
+              <br /><br />
+              <div>
+                Toggle the start button to play again.
+              </div>
+            </div>
+            <div 
+              class="msg animate__animated animate__fadeIn"
               v-if="displayMode === DISPLAY_MODE.CREDITS"
             >
               <AsciiCrab />
@@ -574,7 +587,7 @@ export default {
         } else {
           this.appendfeedbackRows("Accessing");
           this.appendfeedbackRows("next step");
-          setTimeout(() => this.loadNextLevel(), 1600);
+          setTimeout(() => this.loadNextLevel(), 2000);
                     
         }
         
@@ -594,6 +607,14 @@ export default {
       this.clearfeedbackRows();
       this.appendfeedbackRows("Locked Out");
       this.appendfeedbackRows("NO ATTEMPTS LEFT");
+      setTimeout(() => this.gameOver(), 1600)
+    },
+    gameOver() {
+        this.countDownActive = false;
+        if(this.countDownRef) {
+          clearTimeout(this.countDownRef);
+        }
+        this.displayMode = DISPLAY_MODE.OVER;
     },
     resetClock() {
       this.countDown =  this.LEVEL_TIMER[this.currentLevel]
