@@ -620,8 +620,6 @@ export default {
       this.countDown =  this.LEVEL_TIMER[this.currentLevel]
     },
     startTimer() {
-      console.log('This start timer')
-
       if(this.countDownActive) {
         if (this.countDown >= 1) {
             this.countDown--;
