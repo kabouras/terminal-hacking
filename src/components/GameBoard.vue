@@ -705,7 +705,8 @@ export default {
       const tscale = (this.gameBoard.x.s < this.gameBoard.y.s) ? this.gameBoard.x.s : this.gameBoard.y.s
       const gameboardEl = document.getElementById('container');
       gameboardEl.style.transform = "scale(" + tscale + ")";    
-      gameboardEl.style.left = Math.abs(parseInt(((this.gameBoard.x.w * tscale) -winX) /2, 10))  +  "px";        
+      gameboardEl.style.left = Math.abs(parseInt(((this.gameBoard.x.w * tscale) -winX) /2, 10))  +  "px";  
+      gameboardEl.style.top = Math.abs(parseInt(((this.gameBoard.y.h * tscale) -winY) /3, 10))  +  "px";
     }
   },
   mounted() {
