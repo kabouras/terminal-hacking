@@ -9,11 +9,6 @@ html, body {
   letter-spacing: 2px;
 }
 
-h1 {
-  font-size: 3em;
-  margin: .25em;
-}
-
 body {
   background-color: rgba(0,0,0,.1);
 }
@@ -50,22 +45,33 @@ body {
   text-shadow: 0 0 5px #00ff33;
 }
 
-.shround {
+.modal-logo {
+  margin: 0 auto;
+  display: inline-block !important;
+}
+.shroud {
   position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: rgba(61, 54, 53, .5);
-  z-index: 100;
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  border-radius: 35px;
+  background-color: rgba(0,0,0, .8);
+  z-index: 100;  
+}
+
+.shroud.animate__animated.animate__fadeOut {
   pointer-events: none;
 }
 .modal {
   max-width: 700px;  
   margin: 0 auto;
-  margin-top: 5em;
+  padding: 1em;
   font-size: 2.5em;
   pointer-events: none;
+  background: transparent;
+  text-align: left;
+
 }
 
 .outer {
@@ -368,6 +374,13 @@ button:focus {
   pointer-events: none;
 }
 
+.align-left {
+  text-align: left;
+}
+
 .align-right {
   text-align: right;
+}
+.align-center {
+  text-align: center;
 }

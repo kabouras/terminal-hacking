@@ -64,28 +64,7 @@
               class="msg animate__animated animate__fadeIn"
               v-if="displayMode === DISPLAY_MODE.CREDITS"
             >
-              <div>
-                <span class="lazy-spacer">.</span>
-                <span class="lazy-spacer">.</span>
-                <span class="lazy-spacer">.</span>
-                <span class="lazy-spacer">.</span>
-                | |
-              </div>
-              <div>
-                <span class="lazy-spacer">.</span>
-                
-                (\(<span class="lazy-spacer">.</span>_<span class="lazy-spacer">.</span>)/)
-              </div>
-              <div>
-
-                <span class="lazy-spacer">.</span>
-                <span class="lazy-spacer">.</span>
-                <span class="lazy-spacer">.</span>
-                <span v-html="'&#123;&#123;'" />
-                <span class="lazy-spacer">.</span>
-                <span class="lazy-spacer">.</span>
-                }}
-              </div>
+              <AsciiCrab />
               <br /><br />
               <div>Thank you for playing!<br /><br /><br /></div>
               <div>
@@ -246,6 +225,7 @@ import {
 
 import PuzzleColumn from "./PuzzleColumn";
 import ColumnItem from "./ColumnItem";
+import AsciiCrab from "./AsciiCrab";
 
 import { nanoid } from "nanoid";
 
@@ -254,6 +234,7 @@ export default {
   components: {
     PuzzleColumn,
     ColumnItem,
+    AsciiCrab
   },
   data() {
     return {
