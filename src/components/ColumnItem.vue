@@ -4,7 +4,6 @@
       v-for="(val, idx) in node.valList"
       :key="val.charIndex"
       v-html="`${val.char}`"
-      :title="`char_${val.charIndex} -- node.charIndex ${selected.charIndex} val.charIndex ${val.charIndex}`"
       :id="`char_${val.charIndex}`"
       :tabindex="node.key"      
       :class="{active: (isActive && (node.type !== 'filler' || (node.type === 'filler' && selected.charIndex === val.charIndex)))}"
