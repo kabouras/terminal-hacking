@@ -11,6 +11,11 @@ html, body {
 
 body {
   background-color: rgba(0,0,0,.1);
+  background-image: url('./crabco.svg');
+  background-repeat: repeat-x;
+  background-attachment: fixed;
+  background-position-y: center;
+  background-size: auto 100px;
 }
 
 #app-component {
@@ -30,6 +35,7 @@ body {
   -ms-transform-origin: top left;
   -webkit-transform-origin: top left;
   transform-origin: top left;
+  filter: blur(0);
 }
 
 #gameboard {
@@ -40,7 +46,12 @@ body {
   border-radius: 2em;
   letter-spacing: 3px;
 }
-#gameboard, .modal {
+#gameboard {
+  color: #00ff66;
+  text-shadow: 0 0 1px #00ff33;  
+}
+
+.modal * {
   color: #00ff66;
   text-shadow: 0 0 5px #00ff33;
 }
@@ -50,12 +61,12 @@ body {
   display: inline-block !important;
 }
 .shroud {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
-  border-radius: 35px;
+  position: absolute;
+  top: 0px;
+  right: 0px;  
+  left: 0px;
+  bottom: 0;
+  border-radius: 44px;
   background-color: rgba(0,0,0, .8);
   z-index: 100;  
 }
@@ -73,8 +84,16 @@ body {
   text-align: left;
 }
 
+.terminal-outer-1 {
+  position: relative;
+}
+
 .outer {
-  background: #3d3635;
+  background-color:#3d3635;
+  background-image: radial-gradient(rgba(0,0,0,.8) 16%, #3d3635 32%);
+  background-position: 0 0;
+  background-size: 4px 4px;
+
   border: solid 6px #8a7f80;
   border-radius: 2em;
   border-style: outset;
@@ -103,11 +122,11 @@ body {
   );
 }
 
-/* .inner::after {
+.inner::after {
   content: " ";
   position: absolute;
   pointer-events: none;
-  top: 0%;
+  top: -20%;
   right: 0%;
   bottom: 0%;
   left: 0%;
@@ -119,7 +138,7 @@ body {
     rgba(255, 255, 255, 0.1),
     rgba(255, 255, 255, 0.001)
   );
-} */
+}
 
 @keyframes scanlineframe {
   from {top : -500px;}
@@ -257,8 +276,15 @@ body {
   margin-right: 10px;
   background: #caccce;
 
+  background-color: #caccce;
+  background-image: linear-gradient(90deg, rgba(255,255,255,.07) 50%, transparent 50%),
+  linear-gradient(90deg, rgba(255,255,255,.13) 50%, transparent 50%),
+  linear-gradient(90deg, transparent 50%, rgba(255,255,255,.17) 50%),
+  linear-gradient(90deg, transparent 50%, rgba(255,255,255,.19) 50%);
+  background-size: 1px, 2px, 3px, 5px;
+
   border-radius: 4px;
-  box-shadow: 1px 1px 2px #000;
+  box-shadow: 1px 1px 3px #000;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
