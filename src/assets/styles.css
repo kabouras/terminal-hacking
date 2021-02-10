@@ -16,12 +16,25 @@ h1 {
 
 body {
   background-color: rgba(0,0,0,.1);
-  overflow: hidden;
 }
 
-.container { 
+#app-component {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px; 
+}
+
+#container { 
+  position: absolute;
+  top: 0;
   text-align:  center;
-  margin-top: 2em;
+  width: 880px;
+  height: 710px;
+  -ms-transform-origin: top left;
+  -webkit-transform-origin: top left;
+  transform-origin: top left;
 }
 
 #gameboard {
@@ -55,38 +68,6 @@ body {
   pointer-events: none;
 }
 
-@media screen and (max-height: 700px  ) and (orientation: landscape){
-  .modal {
-    font-size: 2em;
-    margin-top: 3em;
-    max-width: 550px;  
-  }
-  #gameboard {
-    font-size: 1.125em !important;
-  }
-  .container {
-    margin: 1em;
-  }
-}
-
-@media screen and (max-width: 900px  ) {
-  .modal {
-    font-size: 2em;
-    margin-top: 3em;
-    max-width: 550px;  
-  }
-  #gameboard {
-    font-size: 1.125em !important;
-  }
-
-  .container {
-    margin-top: 1em;
-  }
-}
-
-
-
-
 .outer {
   background: #3d3635;
   border: solid 6px #8a7f80;
@@ -104,7 +85,7 @@ body {
   border-style: inset;
   box-sizing: border-box;
   background:  #000;
-  min-width: 699px;
+  min-width: 740px;
 }
 
 .inner.active {
@@ -117,7 +98,7 @@ body {
   );
 }
 
-.inner::after {
+/* .inner::after {
   content: " ";
   position: absolute;
   pointer-events: none;
@@ -133,7 +114,7 @@ body {
     rgba(255, 255, 255, 0.1),
     rgba(255, 255, 255, 0.001)
   );
-}
+} */
 
 @keyframes scanlineframe {
   from {top : -500px;}

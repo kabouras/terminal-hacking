@@ -11,10 +11,10 @@
           <div>
             <div class="lazy-spacer" v-for="idx in screenRows" :key="idx">..</div>
           </div>
-          <div v-if="hasStarted">
+          <div v-if="hasStarted" class="animate__animated animate__fadeIn">
             <div class="top">
               <div>CRABCO INDUSTRIES (TM) CRUSTLINK PROTOCOL</div>
-              <div v-if="displayMode === DISPLAY_MODE.GAME">
+              <div v-if="displayMode === DISPLAY_MODE.GAME" class="animate__animated animate__fadeIn">
                 <div>ENTER PASSWORD NOW</div>
 
                 <div class="game-progress">
@@ -35,7 +35,7 @@
               </div>
             </div>
             <div 
-              class="msg"
+              class="msg animate__animated animate__fadeIn"
               v-if="displayMode === DISPLAY_MODE.LOADING"
             >
               LOADING...<span class="text-btn active">.</span>
@@ -61,7 +61,7 @@
               </div>
             </div>
             <div 
-              class="msg"
+              class="msg animate__animated animate__fadeIn"
               v-if="displayMode === DISPLAY_MODE.CREDITS"
             >
               <div>
@@ -259,6 +259,17 @@ export default {
     return {
       hasStarted: false,
       requiresDomEvents: true,
+      gameBoard: {
+        x: {
+          w: 880,
+          s: 1,
+        },
+        y: {
+          h: 710,
+          s: 1,
+        }
+      },
+      countDownRef: null,
       DISPLAY_MODE,
       LEVEL_TYPE,
       LEVEL_STEPS,
@@ -281,6 +292,8 @@ export default {
           this.reset(); 
         }, 1500 );        
       } else {
+        this.countDownActive = false;
+        clearTimeout(this.countDownRef);
         this.displayMode = DISPLAY_MODE.LOADING;
       }
     },
@@ -606,11 +619,11 @@ export default {
     },
     startTimer() {
       console.log('This start timer')
-      let timeoutRef;
+
       if(this.countDownActive) {
         if (this.countDown >= 1) {
             this.countDown--;
-            timeoutRef = setTimeout(() => {
+            this.countDownRef = setTimeout(() => {
                 this.startTimer();
             }, 1000);
         } else {
@@ -619,7 +632,7 @@ export default {
           this.appendfeedbackRows("attempt removed");
           this.attemptsRemaining--;
           if(this.attemptsRemaining > 0) {
-            clearTimeout(timeoutRef)
+            clearTimeout(this.countDownRef);
             this.resetClock(); 
             this.startTimer();   
           } else {
@@ -691,17 +704,36 @@ export default {
       
       if(this.requiresDomEvents) {
         window.addEventListener("keydown", this.handleKeyEvents);
-        // window.addEventListener("resize", this.scaleScreen);
         this.requiresDomEvents =false;
       }
+
       setTimeout(() => {
         this.countDownActive = true;
         this.startTimer();
-      }, 500)
+      }, 500)      
     },
+    calcScale(targetDim, windowDim) {
+      return windowDim / targetDim;
+    },
+    scaleScreen() {
+      const appEl = document.getElementById('app-component');
+      const winX = appEl.offsetWidth;
+      const winY = appEl.offsetHeight;
+      this.gameBoard.x.s = this.calcScale(this.gameBoard.x.w, winX);
+      this.gameBoard.y.s = this.calcScale(this.gameBoard.y.h, winY);
+      const tscale = (this.gameBoard.x.s < this.gameBoard.y.s) ? this.gameBoard.x.s : this.gameBoard.y.s
+      const gameboardEl = document.getElementById('container');
+      gameboardEl.style.transform = "scale(" + tscale + ")";    
+      gameboardEl.style.left = Math.abs(parseInt(((this.gameBoard.x.w * tscale) -winX) /2, 10))  +  "px";        
+    }
+  },
+  mounted() {
+     window.addEventListener("resize", this.scaleScreen);
+     this.scaleScreen();
   },
   unmounted() {
     window.removeEventListener("keydown", this.handleKeyEvents);
+    window.removeEventListener("resize", this.scaleScreen);
   },
 };
 </script>
