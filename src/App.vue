@@ -18,7 +18,7 @@
               <div class="align-left modal-logo">
                 <AsciiCrab />
               </div>
-              <br /><br />
+              <br />
             </div>
             <div style="font-size: .8em; padding-left: 10px;">
               <div>
