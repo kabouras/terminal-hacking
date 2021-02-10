@@ -14,7 +14,9 @@
             
           >
             <div class="align-center">
-              <div>***Terminal Hacking Game***</div><br />
+              <br />
+              <div>***Terminal Hacking Game***</div>
+              <br />
               <div class="align-left modal-logo">
                 <AsciiCrab />
               </div>
