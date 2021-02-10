@@ -4,10 +4,13 @@
     <div id="container">    
       <div 
         class="shroud"
-        :class="{ 'animate__animated animate__fadeOut' : !showShroud }"
+        :class="{ 'animate__animated animate__fadeOut' : animate }"
         @click.stop="hideShroud"
+        v-if="showShroud"
       >
-        <div class="modal">
+        <div class="modal"
+          
+        >
           <div class="align-center">
             <div>***Terminal Hacking Game***</div><br />
             <div class="align-left modal-logo">
@@ -50,11 +53,16 @@ export default {
   data() {
     return {
       showShroud: true,
+      animate: false,
     }
   },
   methods: {
     hideShroud() {
-      this.showShroud = false;
+      this.animate = true;
+      setTimeout( () => {
+        this.showShroud = false;
+
+      }, 1000)
     }
   },
   components: {
